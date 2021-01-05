@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "386343171105",
+    "project_id": "best-wave-android",
+    "storage_bucket": "best-wave-android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:386343171105:android:339e8a7b0f420895229f60",
+        "android_client_info": {
+          "package_name": "pt.ua.cm.bestwave"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "386343171105-m4qhijrb6uopo7egecsjvv8l6rqgc78i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pt.ua.cm.bestwave",
+            "certificate_hash": "ca25079f6db6b9aed7b980f188a96e80cfe053c6"
+          }
+        },
+        {
+          "client_id": "386343171105-gnfuo6hkmnevqrs8jdonpsegcujpovf7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxdRVozUe8lrzxvucsjSJFqMRpwS0k4WY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "386343171105-gnfuo6hkmnevqrs8jdonpsegcujpovf7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

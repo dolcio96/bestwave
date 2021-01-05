@@ -4,17 +4,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -27,20 +32,30 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.IOException;
+import java.util.List;
+
 import pt.ua.cm.bestwave.MainActivity;
 import pt.ua.cm.bestwave.R;
+import pt.ua.cm.bestwave.SearchBarFragment;
 
 public class MapsFragment extends Fragment {
 
     SupportMapFragment supportMapFragment;
+    FragmentManager fm;
+    SearchView searchView;
     FusedLocationProviderClient client;
+    GoogleMap map;
+    SearchBarFragment bar;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_maps, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_maps, container, false);
+        return view;
     }
 
     @Override
@@ -54,12 +69,14 @@ public class MapsFragment extends Fragment {
         //check permission
         if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
             getCurrentLocation();
+            //setSearchView(view);
         }
         else{
             //Request permission
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},44);
         }
     }
+
 
     private void getCurrentLocation(){
         @SuppressLint("MissingPermission") Task<Location> task = client.getLastLocation();
@@ -70,19 +87,32 @@ public class MapsFragment extends Fragment {
                     supportMapFragment.getMapAsync(new OnMapReadyCallback() {
                         @Override
                         public void onMapReady(GoogleMap googleMap) {
+                            map = googleMap;
                             LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
                             MarkerOptions options= new MarkerOptions().position(latLng).title("Current Location");
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
                             googleMap.addMarker(options);
+                            addSearchView(googleMap);
                         }
+
                     });
                 }
                 else {
                     Log.d("LOCATION NULL","LOCATION NULL");
                 }
             }
+
         });
     }
+
+    private void addSearchView(GoogleMap map){
+        fm = getParentFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        bar = new SearchBarFragment(map);
+        ft.add(R.id.map,bar).addToBackStack(null).commit();
+    }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -93,4 +123,6 @@ public class MapsFragment extends Fragment {
 
         }
     }
+
+
 }

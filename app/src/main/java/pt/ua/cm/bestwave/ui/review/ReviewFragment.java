@@ -1,4 +1,4 @@
-package pt.ua.cm.bestwave.ui.gallery;
+package pt.ua.cm.bestwave.ui.review;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,15 +14,15 @@ import androidx.lifecycle.ViewModelProviders;
 
 import pt.ua.cm.bestwave.R;
 
-public class GalleryFragment extends Fragment {
+public class ReviewFragment extends Fragment {
 
-    private GalleryViewModel galleryViewModel;
+    private ReviewViewModel galleryViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         galleryViewModel =
-                ViewModelProviders.of(this).get(GalleryViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_gallery, container, false);
+                ViewModelProviders.of(this).get(ReviewViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_review, container, false);
         final TextView textView = root.findViewById(R.id.text_gallery);
         galleryViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override

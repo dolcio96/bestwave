@@ -6,15 +6,33 @@ import androidx.lifecycle.ViewModel;
 
 public class ReviewViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
+    private MutableLiveData<String> mTextInsertReview;
+    private MutableLiveData<String> mTextRatingBar;
+    private MutableLiveData<String> mTextTakeAPicture;
+    private MutableLiveData<String> mTextWriteDescription;
+
 
     public ReviewViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is review fragment");
+        mTextInsertReview = new MutableLiveData<>();
+        mTextInsertReview.setValue("Insert your review");
+        mTextRatingBar = new MutableLiveData<>();
+        mTextRatingBar.setValue("Rating Bar");
+        mTextTakeAPicture = new MutableLiveData<>();
+        mTextTakeAPicture.setValue("Take a Picture");
+        mTextWriteDescription =new MutableLiveData<>();
+        mTextWriteDescription.setValue("Write a Description");
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public LiveData<String> getTextInsertReview() {
+        return mTextInsertReview;
     }
-
+    public LiveData<String> getTextRatingBar() {
+        return mTextRatingBar;
+    }
+    public LiveData<String> getTextTakeAPicture() {
+        return mTextTakeAPicture;
+    }
+    public LiveData<String> getTextWriteDescription() {
+        return mTextWriteDescription;
+    }
 }

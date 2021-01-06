@@ -17,4 +17,18 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="reviewTextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="ratingBar" parent="Theme.AppCompat">
+        <item name="colorControlNormal">@color/bluCeruleo</item>
+        <item name="colorControlActivated">@color/bluMedio</item>
+    </style>
+
 </resources>

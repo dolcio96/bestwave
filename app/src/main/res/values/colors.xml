@@ -6,4 +6,6 @@
     <color name="bluCeruleo">#3B51D0</color>
     <color name="bluMedio">#2F3786 </color>
     <color name="white">#FFFFFF</color>
+    <color name="whiteBackground">#fff3f3ff</color>
+    <color name="holoBlueDark">#ff0099cc</color>
 </resources>

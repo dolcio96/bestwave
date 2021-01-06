@@ -7,16 +7,90 @@
     tools:context=".ui.review.ReviewFragment">
 
     <TextView
-        android:id="@+id/text_gallery"
+        android:id="@+id/inserReviewTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:textAlignment="center"
-        android:textSize="20sp"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@id/ratingBarTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/ratingBarTextView"
+        style="@style/reviewTextView"
+        app:layout_constraintBottom_toTopOf="@+id/ratingBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inserReviewTextView" />
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:theme="@style/ratingBar"
+        app:layout_constraintBottom_toTopOf="@id/takeAPictureTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ratingBarTextView" />
+
+    <TextView
+        android:id="@+id/takeAPictureTextView"
+        style="@style/reviewTextView"
+        app:layout_constraintBottom_toTopOf="@+id/imageButtonCamera"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
+
+    <ImageButton
+        android:id="@+id/imageButtonCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/whiteBackground"
+        android:padding="4dp"
+        android:src="@mipmap/camera_image"
+        app:layout_constraintBottom_toTopOf="@+id/writeDescriptionTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/takeAPictureTextView" />
+
+    <TextView
+        android:id="@+id/writeDescriptionTextView"
+        style="@style/reviewTextView"
+        app:layout_constraintBottom_toTopOf="@+id/editTextWriteDescription"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageButtonCamera" />
+
+    <EditText
+        android:id="@+id/editTextWriteDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_border_edittext"
+        android:ems="10"
+        android:hint="Write a description.."
+        android:inputType="textPersonName"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSendReview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/writeDescriptionTextView" />
+
+    <Button
+        android:id="@+id/buttonSendReview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/bluCeruleo"
+        android:padding="3dp"
+        android:text="Send Review"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextWriteDescription" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

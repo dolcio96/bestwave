@@ -1,4 +1,4 @@
-package pt.ua.cm.bestwave.ui.home;
+package pt.ua.cm.bestwave.ui.profile;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,15 +14,15 @@ import androidx.lifecycle.ViewModelProviders;
 
 import pt.ua.cm.bestwave.R;
 
-public class HomeFragment extends Fragment {
+public class ProfileFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
+    private ProfileViewModel homeViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+                ViewModelProviders.of(this).get(ProfileViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_profile, container, false);
         final TextView textView = root.findViewById(R.id.text_home);
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override

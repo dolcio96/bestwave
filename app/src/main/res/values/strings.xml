@@ -23,4 +23,13 @@
     <string name="text_forgot_password">Forgot the password?</string>
     <string name="button_sign_in">Log In</string>
     <string name="text_signin_signup">Register Now!</string>
+    <string name="text_signup_message">Hello! Register now</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="button_sign_up">Signup</string>
+    <string name="already_registered_log_in">Already registered? Log in!</string>
+    <string name="hint_surname">Surname</string>
+    <string name="hint_name">Name</string>
 </resources>

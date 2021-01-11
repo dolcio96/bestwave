@@ -12,6 +12,9 @@
 
     <color name="colorTextInputBackground">#F7F7F7</color>
 
+    <color name="greyProfile">#88888f</color>
+    <color name="orangeProfile">#e98725</color>
+
 
     <!--reds-->
     <color name="md_red_50">#FFEBEE</color>

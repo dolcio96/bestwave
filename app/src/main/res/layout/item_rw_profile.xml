@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    tools:context="ui.profile.ProfileFragment"
+    android:orientation="horizontal"
+    android:weightSum="10"
+    android:background="@color/white"
+    >
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:id="@+id/dataTextViewProfile"
+    android:text="01/05/2020"
+    android:textSize="20dp"
+    android:gravity="center"
+    android:layout_weight="1"
+    android:background="@color/white">
+
+</TextView>
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:textSize="20dp"
+    android:id="@+id/starTextViewProfile"
+    android:text="4"
+    android:gravity="center"
+    android:layout_weight="6">
+</TextView>
+<ImageView
+    android:layout_weight="4"
+    android:layout_width="100dp"
+    android:layout_height="match_parent"
+    android:id="@+id/imageReviewImageView"
+    android:src="@drawable/pic_profile_woman">
+
+</ImageView>
+
+  <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="15dp"
+      >
+
+  <ImageButton
+      android:layout_width="wrap_content"
+      android:layout_height="50dp"
+      android:background="@color/white"
+      android:id="@+id/openInfoReviewProfileButtonImage"
+      android:layout_weight="1"
+      android:src="@mipmap/ic_list_review_profile"
+      >
+  </ImageButton>
+  </LinearLayout>
+
+
+
+
+
+
+
+</LinearLayout>

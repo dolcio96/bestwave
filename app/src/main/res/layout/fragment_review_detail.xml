@@ -96,7 +96,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Qui ci inseriamo un gran bel commento su una paradisiaca spiaggia portoghese, decidiamo bene la dimensione il carattere e tutto il resto">
+            android:text="Qui ci inseriamo un gran bel bel commento su una paradisiaca spiaggia portoghese, decidiamo bene la dimensione il carattere e tutto il resto">
 
         </TextView>
     </ScrollView>

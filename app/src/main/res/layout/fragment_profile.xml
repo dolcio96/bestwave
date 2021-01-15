@@ -1,122 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/profile_container"
     android:fitsSystemWindows="true"
     tools:context="ui.profile.ProfileFragment"
     android:orientation="vertical"
     >
 
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar_profile"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        >
-
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
+            android:theme="@style/AppTheme.AppBarOverlay"
 
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar"
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
-            app:expandedTitleTextAppearance="@style/TransparentText"
-            android:background="@drawable/side_nav_bar">
+            >
 
-            <LinearLayout
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:id="@+id/linearLayout"
-                android:background="@drawable/side_nav_bar"
-                android:layout_margin="6dp">
+                android:fitsSystemWindows="true"
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/profile_image"
-                    android:layout_width="96dp"
-                    android:layout_height="96dp"
-                    android:src="@drawable/pic_profile_woman"
-                    app:civ_border_width="4dp"
-                    app:civ_border_color="@color/bluMedio"/>
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:toolbarId="@+id/toolbar"
+                app:expandedTitleMarginEnd="64dp"
+                app:expandedTitleMarginStart="48dp"
+                app:expandedTitleTextAppearance="@style/TransparentText"
+                android:background="@drawable/side_nav_bar">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-
-                    android:orientation="horizontal"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:layout_marginBottom="5dp">
-
-                    <TextView
-                        android:text="NAME"
-                        android:id="@+id/namename_text_view"
-                        android:layout_width="0dp"
-                        android:textSize="24dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/surnamename_text_view"/>
-
-                    <TextView
-                        android:id="@+id/surnamename_text_view"
-                        android:text="SURNAME"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:textSize="24dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/namename_text_view"
-                        app:layout_constraintEnd_toEndOf="parent"/>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-                <TextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="bestwave@gmail.com"
-                    android:textSize="18dp"
-                    android:textStyle="bold"/>
+                    android:layout_centerInParent="true"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:id="@+id/linearLayout"
+                    android:background="@drawable/side_nav_bar"
+                    android:layout_margin="6dp">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/profile_image"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:src="@drawable/pic_profile_woman"
+                        app:civ_border_width="4dp"
+                        app:civ_border_color="@color/bluMedio"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:layout_marginBottom="5dp">
+
+                        <TextView
+                            android:text="NAME"
+                            android:id="@+id/namename_text_view"
+                            android:layout_width="0dp"
+                            android:textSize="24dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/surnamename_text_view"/>
+
+                        <TextView
+                            android:id="@+id/surnamename_text_view"
+                            android:text="SURNAME"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="24dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/namename_text_view"
+                            app:layout_constraintEnd_toEndOf="parent"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="bestwave@gmail.com"
+                        android:textSize="18dp"
+                        android:textStyle="bold"/>
 
 
 
-            </LinearLayout>
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-    </com.google.android.material.appbar.AppBarLayout>
+                </LinearLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/containter_recyclerview_review"
-        >
-        <include
-            layout="@layout/item_rw_profile_title"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/recyclerviewItem"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/containter_recyclerview_review"
+            >
+            <include
+                layout="@layout/item_rw_profile_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/recyclerviewItem"/>
+        </LinearLayout>
+
     </LinearLayout>
 
-
-
-</LinearLayout>
+</RelativeLayout>

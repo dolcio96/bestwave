@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map;
 
+import pt.ua.cm.bestwave.MainActivity;
 import pt.ua.cm.bestwave.R;
 
 public class HelperAdapterProfile extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -26,6 +28,8 @@ public class HelperAdapterProfile extends RecyclerView.Adapter<RecyclerView.View
     ArrayList<String> arrayListName = new ArrayList<String>();
     ProfileViewHolderClass viewHolderClass;
     Boolean isPhone = false;
+    ImageButton buttonReviewDetail;
+
     public HelperAdapterProfile(){
         this.context=context;
     }
@@ -36,7 +40,20 @@ public class HelperAdapterProfile extends RecyclerView.Adapter<RecyclerView.View
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rw_profile,parent,false);
         viewHolderClass= new ProfileViewHolderClass(view);
+        // onClick handler for review detail
+        buttonReviewDetail = view.findViewById(R.id.openInfoReviewProfileButtonImage);
+        buttonReviewDetail.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                ReviewDetail fragment = new ReviewDetail();
+                FragmentManager fm = ((MainActivity) v.getContext()).getSupportFragmentManager();
+                FragmentTransaction transaction = fm.beginTransaction();
+                transaction.add(R.id.profile_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
         return viewHolderClass;
     }
 

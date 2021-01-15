@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".ui.review.ReviewFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="270dp"
+        android:id="@+id/imageContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageReview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/whiteBackground"
+            android:src="@drawable/pic_profile_woman"
+            />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/dateReview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="serif-monospace"
+        android:text="11/01/2021\n8:05"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="26sp"
+        app:layout_constraintBottom_toTopOf="@id/ratingBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/location_container">
+
+    </TextView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/location_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageContainer">
+
+        <ImageView
+            android:id="@+id/locationlogo"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:src="@drawable/ic_location_foreground"
+            ></ImageView>
+
+        <TextView
+            android:id="@+id/locationReview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-thin"
+            android:text="Praia da Barra (Aveiro)"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="21dp"
+            >
+        </TextView>
+
+
+
+    </LinearLayout>
+
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:theme="@style/ratingBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dateReview"
+        app:layout_constraintBottom_toTopOf="@+id/commentContainer"/>
+
+
+    <ScrollView
+        android:id="@+id/commentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ratingBar">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Qui ci inseriamo un gran bel commento su una paradisiaca spiaggia portoghese, decidiamo bene la dimensione il carattere e tutto il resto">
+
+        </TextView>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

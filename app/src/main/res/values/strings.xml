@@ -32,4 +32,6 @@
     <string name="already_registered_log_in">Already registered? Log in!</string>
     <string name="hint_surname">Surname</string>
     <string name="hint_name">Name</string>
+    <string name="location_text">"Latitude: %1$.4f \n Longitude: %2$.4f \n Timestamp: %3$tr"</string>
+    <string name="location_permission_denied">Location permissions denied, please enable the permissions to use this app.</string>
 </resources>

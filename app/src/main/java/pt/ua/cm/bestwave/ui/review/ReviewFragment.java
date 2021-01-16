@@ -179,7 +179,7 @@ public class ReviewFragment extends Fragment {
                                 List<Address> addresses = geocoder.getFromLocation(
                                         location.getLatitude(), location.getLongitude(), 1
                                 );
-                                //TODO Set Latitude on TextView or save into variable
+                                //TODO Set Latitude on TextView or save into variable.
                                 editText.setText(Html.fromHtml("Address : " + addresses.get(0).getAddressLine(0)));
                             } catch (IOException e) {
                                 e.printStackTrace();

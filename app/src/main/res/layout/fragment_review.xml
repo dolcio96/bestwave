@@ -15,16 +15,49 @@
         android:layout_marginEnd="8dp"
         android:textAlignment="center"
         android:textSize="40sp"
-        app:layout_constraintBottom_toTopOf="@id/ratingBarTextView"
+        app:layout_constraintBottom_toTopOf="@id/location_container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/location_container"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/inserReviewTextView"
+        app:layout_constraintBottom_toTopOf="@id/ratingBarTextView"
+        >
+
+        <ImageView
+            android:id="@+id/locationlogo"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:src="@drawable/ic_location_foreground"
+            />
+
+        <TextView
+            android:id="@+id/locationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-thin"
+            android:text="Praia da Barra (Aveiro)"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="21sp"
+            >
+        </TextView>
+
+
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/ratingBarTextView"
         style="@style/reviewTextView"
         app:layout_constraintBottom_toTopOf="@+id/ratingBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inserReviewTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/location_container" />
 
     <RatingBar
         android:id="@+id/ratingBar"

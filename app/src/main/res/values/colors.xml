@@ -8,6 +8,7 @@
     <color name="white">#FFFFFF</color>
     <color name="whiteBackground">#fff3f3ff</color>
     <color name="holoBlueDark">#ff0099cc</color>
+    <color name="transparent">#00000000</color>
 
 
     <color name="colorTextInputBackground">#F7F7F7</color>

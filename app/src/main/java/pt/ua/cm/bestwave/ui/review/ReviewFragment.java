@@ -65,6 +65,7 @@ import java.util.UUID;
 import pt.ua.cm.bestwave.MainActivity;
 import pt.ua.cm.bestwave.R;
 import pt.ua.cm.bestwave.ui.authentication.UserHelperClass;
+import pt.ua.cm.bestwave.ui.maps.HelperMap;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -197,7 +198,7 @@ public class ReviewFragment extends Fragment {
                 if(checkFields()){
                     uuid = UUID.randomUUID().toString();
                     uploadImage();
-                    /*if(sendDataToDatabase()){
+                    if(sendDataToDatabase()){
                         FragmentActivity a = getActivity();
                         Bitmap icon = BitmapFactory.decodeResource(a.getResources(), R.mipmap.camera_image);
                         ratingBar.setRating(Float.parseFloat("0.0"));
@@ -210,7 +211,7 @@ public class ReviewFragment extends Fragment {
                     }else{
                         Snackbar.make(view, "Data upload failure, try later!", Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).setBackgroundTint(getActivity().getResources().getColor(R.color.md_red_500)).show();
-                    }*/
+                    }
 
                 }else{
                     Snackbar.make(view, "Some fields are empty!", Snackbar.LENGTH_LONG)
@@ -296,7 +297,18 @@ public class ReviewFragment extends Fragment {
         ReviewHelperClass reviewHelperClass = new ReviewHelperClass(username,latLng.latitude,latLng.longitude,ratingBar.getRating(),editText.getText().toString(),uuid);
 
         reference.child(uuid).setValue(reviewHelperClass);
+        sendMarkerTDB();
+
         return true;
+    }
+
+    private void sendMarkerTDB() {
+        //Initialize firebase database
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("markers");
+
+        HelperMap helperMap = new HelperMap(latLng.latitude,latLng.longitude);
+        reference.child(uuid).setValue(helperMap);
     }
 
     @SuppressLint("MissingPermission")
@@ -317,7 +329,8 @@ public class ReviewFragment extends Fragment {
                         //TODO editText.setText(Html.fromHtml("Address : " + addresses.get(0).getAddressLine(0)));
                         //Set longitude and latitude inside a variable
                         latLng = new LatLng(addresses.get(0).getLatitude(),addresses.get(0).getLongitude());
-                        locationTextView.setText((String) String.valueOf(latLng.latitude));
+                        String address = addresses.get(0).getAddressLine(0);
+                        locationTextView.setText((String) String.valueOf(address));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

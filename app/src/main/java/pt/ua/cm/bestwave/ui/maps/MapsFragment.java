@@ -31,9 +31,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import pt.ua.cm.bestwave.MainActivity;
 import pt.ua.cm.bestwave.R;
@@ -75,6 +83,8 @@ public class MapsFragment extends Fragment {
             //Request permission
             ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},44);
         }
+
+
     }
 
 
@@ -93,6 +103,7 @@ public class MapsFragment extends Fragment {
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
                             googleMap.addMarker(options);
                             addSearchView(googleMap);
+                            setMarkerToMap();
                         }
 
                     });
@@ -103,6 +114,44 @@ public class MapsFragment extends Fragment {
             }
 
         });
+    }
+
+    private void setMarkerToMap() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference().child("markers");
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String ltd = "";
+                String lng = "";
+
+                Map<String, HelperMap> helperMap =(Map<String, HelperMap>) snapshot.getValue();
+
+                for (DataSnapshot id : snapshot.getChildren()){
+                    for(DataSnapshot ltdlng : id.getChildren()){
+
+
+                        if(ltdlng.getKey().equals("latitude")){
+                            ltd = String.valueOf(ltdlng.getValue());
+                        }else{
+                            lng = String.valueOf(ltdlng.getValue());
+                        }
+                    }
+                    LatLng reviewPosition = new LatLng(Double.parseDouble(ltd),Double.parseDouble(lng));
+                    map.addMarker(new MarkerOptions().position(reviewPosition));
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
     }
 
     private void addSearchView(GoogleMap map){

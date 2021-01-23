@@ -76,10 +76,10 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/surname_rpofile_text_view"/>
+                            app:layout_constraintEnd_toStartOf="@+id/surname_profile_text_view"/>
 
                         <TextView
-                            android:id="@+id/surname_rpofile_text_view"
+                            android:id="@+id/surname_profile_text_view"
                             android:text="SURNAME"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"

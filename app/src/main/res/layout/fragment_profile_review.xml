@@ -17,7 +17,7 @@
         android:orientation="vertical"
         android:id="@+id/linearLayout"
         android:background="@drawable/side_nav_bar"
-        android:layout_margin="6dp">
+        android:padding="2dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -38,32 +38,34 @@
 
             <TextView
                 android:text="NAME"
-                android:id="@+id/name_profile_text_view"
+                android:id="@+id/name_profile_review_text_view"
                 android:layout_width="0dp"
                 android:textSize="30dp"
                 android:fontFamily="serif-monospace"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="40dp"
                 android:layout_weight="1"
                 android:textStyle="bold"
-                android:gravity="center"
+                android:gravity="end"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/surname_rpofile_text_view"/>
+                app:layout_constraintEnd_toStartOf="@+id/surname_profile_review_text_view"/>
 
             <TextView
-                android:id="@+id/surname_rpofile_text_view"
+                android:id="@+id/surname_profile_review_text_view"
                 android:text="SURNAME"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
                 android:textSize="30dp"
                 android:layout_weight="1"
                 android:fontFamily="serif-monospace"
                 android:textStyle="bold"
-                android:gravity="center"
+                android:gravity="start"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/name_profile_text_view"
+                app:layout_constraintStart_toEndOf="@+id/name_profile_review_text_view"
                 app:layout_constraintEnd_toEndOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -73,7 +75,7 @@
             android:layout_height="wrap_content"
             android:text="bestwave@gmail.com"
             android:textSize="15dp"
-            android:id="@+id/email_profile_text_view"
+            android:id="@+id/email_profile_review_text_view"
             android:textStyle="bold"/>
 
 
@@ -103,7 +105,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/dateReview"
+            android:id="@+id/profile_review_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="serif-monospace"
@@ -111,7 +113,7 @@
             android:gravity="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textSize="26sp"
-            app:layout_constraintBottom_toTopOf="@id/ratingBar"
+            app:layout_constraintBottom_toTopOf="@id/profile_review_ratingBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/location_container">
@@ -134,7 +136,7 @@
                 ></ImageView>
 
             <TextView
-                android:id="@+id/locationReview"
+                android:id="@+id/profile_review_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-thin"
@@ -150,13 +152,13 @@
 
 
         <RatingBar
-            android:id="@+id/ratingBar"
+            android:id="@+id/profile_review_ratingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:theme="@style/ratingBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dateReview"
+            app:layout_constraintTop_toBottomOf="@id/profile_review_date"
             app:layout_constraintBottom_toTopOf="@+id/commentContainer"/>
 
 
@@ -167,9 +169,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ratingBar">
+            app:layout_constraintTop_toBottomOf="@id/profile_review_ratingBar">
 
             <TextView
+                android:id="@+id/profile_review_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"

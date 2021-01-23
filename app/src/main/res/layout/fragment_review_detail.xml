@@ -31,11 +31,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="serif-monospace"
-        android:text="11/01/2021\n8:05"
         android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="26sp"
-        app:layout_constraintBottom_toTopOf="@id/ratingBar"
+        app:layout_constraintBottom_toTopOf="@id/profile_review_ratingBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/location_container">
@@ -55,7 +54,7 @@
             android:layout_height="match_parent"
             android:background="@color/white"
             android:src="@drawable/ic_location_foreground"
-            ></ImageView>
+            />
 
         <TextView
             android:id="@+id/locationReview"
@@ -74,7 +73,7 @@
 
 
     <RatingBar
-        android:id="@+id/ratingBar"
+        android:id="@+id/profile_review_ratingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:theme="@style/ratingBar"
@@ -91,12 +90,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ratingBar">
+        app:layout_constraintTop_toBottomOf="@id/profile_review_ratingBar">
 
         <TextView
             android:layout_width="match_parent"
+            android:id="@+id/descriptionText"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:textSize="20dp"
+            android:fontFamily="serif-monospace"
             android:text="Qui ci inseriamo un gran bel bel commento su una paradisiaca spiaggia portoghese, decidiamo bene la dimensione il carattere e tutto il resto">
 
         </TextView>

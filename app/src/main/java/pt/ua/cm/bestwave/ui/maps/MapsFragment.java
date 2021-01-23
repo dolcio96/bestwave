@@ -73,6 +73,7 @@ public class MapsFragment extends Fragment {
     FirebaseDatabase database;
     DatabaseReference reference;
 
+    String tag;
     ReviewHelperClass rhc;
     View viewMarkerInfo;
     TextView title;
@@ -162,11 +163,11 @@ public class MapsFragment extends Fragment {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String tag = "";
+                tag = "";
                 String ltd = "";
                 String lng = "";
 
-                for (DataSnapshot id : snapshot.getChildren()){
+                for (final DataSnapshot id : snapshot.getChildren()){
                     for(DataSnapshot ltdlng : id.getChildren()){
                         if(ltdlng.getKey().equals("latitude")){
                             ltd = String.valueOf(ltdlng.getValue());
@@ -181,12 +182,15 @@ public class MapsFragment extends Fragment {
                     //marker.setTitle("View Review");
                     marker.setTag(tag);
                     Log.d("TAG",tag);
+
                     map.addMarker(new MarkerOptions().position(reviewPosition)).setTitle("View Review");
                     map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(Marker marker) {
+                            String currentTag = (String)marker.getTag();
+
                             Log.d("PROVA","PROVA");
-                            ProfileReviewFragment fragment = new ProfileReviewFragment();
+                            ProfileReviewFragment fragment = new ProfileReviewFragment(currentTag);
                             FragmentManager fm = getActivity().getSupportFragmentManager();
                             FragmentTransaction transaction = fm.beginTransaction();
                             transaction.replace(R.id.map, fragment);
@@ -265,13 +269,13 @@ public class MapsFragment extends Fragment {
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Log.d("PROVISSIMA",snapshot.getKey());
-                    rhc = snapshot.getValue(ReviewHelperClass.class);
-                    title = (TextView) viewMarkerInfo.findViewById(R.id.titleTextViewMarkerInfo);
-                    Log.d("PROVISSIMA2",String.valueOf(rhc.getStars()));
-                    Log.d("PROVISSIMA3",String.valueOf(title.getText()));
-                    CharSequence stars = String.valueOf(rhc.getStars());
-                    title.setText("PROVA");
+                Log.d("PROVISSIMA",snapshot.getKey());
+                rhc = snapshot.getValue(ReviewHelperClass.class);
+                title = (TextView) viewMarkerInfo.findViewById(R.id.titleTextViewMarkerInfo);
+                Log.d("PROVISSIMA2",String.valueOf(rhc.getStars()));
+                Log.d("PROVISSIMA3",String.valueOf(title.getText()));
+                CharSequence stars = String.valueOf(rhc.getStars());
+                title.setText("PROVA");
             }
 
 

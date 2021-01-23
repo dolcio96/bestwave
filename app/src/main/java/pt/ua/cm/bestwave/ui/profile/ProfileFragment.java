@@ -1,7 +1,6 @@
 package pt.ua.cm.bestwave.ui.profile;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +14,12 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -39,7 +34,6 @@ public class ProfileFragment extends Fragment {
 
     private ProfileViewModel homeViewModel;
     RecyclerView reviewRecyclerView;
-    FirebaseRecyclerAdapter adapter;
     UserHelperClass uhc;
     HelperAdapterProfile helperAdapterProfile;
     ReviewHelperClass rhc=null;
@@ -88,7 +82,7 @@ public class ProfileFragment extends Fragment {
         //GET VIEW PROFILE COMPONENTS
         imageProfileView=view.findViewById(R.id.profile_image_image_view);
         nameTextView=view.findViewById(R.id.name_profile_text_view);
-        surnameTextView=view.findViewById(R.id.surname_rpofile_text_view);
+        surnameTextView=view.findViewById(R.id.surname_profile_text_view);
         emailTextView=view.findViewById(R.id.email_profile_text_view);
         reviewRecyclerView=view.findViewById(R.id.recyclerviewItem);
         reviewRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -99,7 +93,7 @@ public class ProfileFragment extends Fragment {
                 for(DataSnapshot ds: snapshot.getChildren()){
                     ReviewHelperClass rhc = ds.getValue(ReviewHelperClass.class);
                     if(uuidUser.equals(rhc.getUuidUser())){
-                    reviewMap.put(ds.getKey(),rhc);
+                        reviewMap.put(ds.getKey(),rhc);
                     }
 
                 }

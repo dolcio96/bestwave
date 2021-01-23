@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.Serializable;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 import pt.ua.cm.bestwave.MainActivity;
 import pt.ua.cm.bestwave.R;
+import pt.ua.cm.bestwave.ui.maps.MapsFragmentDirections;
 import pt.ua.cm.bestwave.ui.review.ReviewHelperClass;
 
 public class HelperAdapterProfile extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -31,6 +33,7 @@ public class HelperAdapterProfile extends RecyclerView.Adapter<RecyclerView.View
     ArrayList<ReviewHelperClass> arrayListReview = new ArrayList<ReviewHelperClass>();
     ProfileViewHolderClass viewHolderClass;
     HashMap<String, ReviewHelperClass> reviewMap;
+    View view;
 
     public HelperAdapterProfile(HashMap<String, ReviewHelperClass> reviewMap){
         this.context=context;
@@ -47,7 +50,7 @@ public class HelperAdapterProfile extends RecyclerView.Adapter<RecyclerView.View
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rw_profile,parent,false);
+        view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rw_profile,parent,false);
         viewHolderClass= new ProfileViewHolderClass(view);
         return viewHolderClass;
     }
@@ -62,12 +65,17 @@ public class HelperAdapterProfile extends RecyclerView.Adapter<RecyclerView.View
         viewHolderClass.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ReviewDetail fragment = new ReviewDetail(rhc);
+
+                ProfileFragmentDirections.NavigateFromProfileToReviewDetail action =
+                        ProfileFragmentDirections.navigateFromProfileToReviewDetail(rhc);
+                action.setCurrentRhc(rhc);
+                Navigation.findNavController(view).navigate(action);
+                /*ReviewDetail fragment = new ReviewDetail(rhc);
                 FragmentManager fm = ((MainActivity) v.getContext()).getSupportFragmentManager();
                 FragmentTransaction transaction = fm.beginTransaction();
                 transaction.add(R.id.profile_container, fragment);
                 transaction.addToBackStack(null);
-                transaction.commit();
+                transaction.commit();*/
             }
         });
 

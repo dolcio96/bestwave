@@ -8,6 +8,7 @@ import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -42,6 +43,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -77,7 +80,16 @@ public class MapsFragment extends Fragment {
     ReviewHelperClass rhc;
     View viewMarkerInfo;
     TextView title;
+    View view;
+    FirebaseUser user;
+    private FirebaseAuth mAuth;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
+
+    }
 
     @Nullable
     @Override
@@ -85,7 +97,7 @@ public class MapsFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_maps, container, false);
+        view = inflater.inflate(R.layout.fragment_maps, container, false);
         return view;
     }
 
@@ -110,7 +122,6 @@ public class MapsFragment extends Fragment {
 
     }
 
-
     private void getCurrentLocation(){
         @SuppressLint("MissingPermission") Task<Location> task = client.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
@@ -122,11 +133,17 @@ public class MapsFragment extends Fragment {
                         public void onMapReady(GoogleMap googleMap) {
                             map = googleMap;
                             LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
-                            MarkerOptions options= new MarkerOptions().position(latLng).title("Current Location")
+                            Marker marker =  map.addMarker(new MarkerOptions().position(latLng)
+                                    .icon(BitmapDescriptorFactory.fromBitmap((getBitmapFromVectorDrawable(getContext(),R.drawable.ic_van_de_surf))))
+                                    .title("Current Location")
+                                    .zIndex(999));
+                            //marker.setTitle("View Review");
+                            marker.setTag("CURRENT");
+                          /*  MarkerOptions options= new MarkerOptions().position(latLng).title("Current Location")
                                     .icon(BitmapDescriptorFactory.fromBitmap((getBitmapFromVectorDrawable(getContext(),R.drawable.ic_van_de_surf))))
                                     .zIndex(999);
+                            googleMap.addMarker(options);*/
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,20));
-                            googleMap.addMarker(options);
                             addSearchView(googleMap);
                             setMarkerToMap();
                         }
@@ -181,21 +198,19 @@ public class MapsFragment extends Fragment {
                             .position(reviewPosition));
                     //marker.setTitle("View Review");
                     marker.setTag(tag);
-                    Log.d("TAG",tag);
 
-                    map.addMarker(new MarkerOptions().position(reviewPosition)).setTitle("View Review");
+                    //map.addMarker(new MarkerOptions().position(reviewPosition)).setTitle("View Review");
                     map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(Marker marker) {
-                            String currentTag = (String)marker.getTag();
+                            if(!marker.getTag().toString().equals("CURRENT")){
+                                String currentTag = String.valueOf(marker.getTag());
+                                MapsFragmentDirections.NavigateFromMapToProfileReview action =
+                                MapsFragmentDirections.navigateFromMapToProfileReview();
+                                action.setCurrentTag(currentTag);
+                                Navigation.findNavController(view).navigate(action);
+                            }
 
-                            Log.d("PROVA","PROVA");
-                            ProfileReviewFragment fragment = new ProfileReviewFragment(currentTag);
-                            FragmentManager fm = getActivity().getSupportFragmentManager();
-                            FragmentTransaction transaction = fm.beginTransaction();
-                            transaction.replace(R.id.map, fragment);
-                            transaction.addToBackStack(null);
-                            transaction.commit();
 
                             return false;
                         }
@@ -221,71 +236,6 @@ public class MapsFragment extends Fragment {
         ft.add(R.id.map,bar).addToBackStack(null).commit();
     }
 
-    private void setMarkerInfoWindow(){
-
-        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-
-            // Use default InfoWindow frame
-            @Override
-            public View getInfoWindow(Marker args) {
-                return null;
-            }
-
-            // Defines the contents of the InfoWindow
-            @Override
-            public View getInfoContents(Marker args) {
-
-                // Getting view from the layout file info_window_layout
-                viewMarkerInfo = getLayoutInflater().inflate(R.layout.info_window_layout, null);
-                Log.d("MINCHIA",String.valueOf(args.getTag()));
-                getReviewDetailFromDB(String.valueOf(args.getTag()));
-                // Getting the position from the marker
-
-
-                map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                    public void onInfoWindowClick(Marker marker) {
-                        Log.d("MARKEROK2","MARKEROK2");
-
-
-
-                    }
-                });
-
-                // Returning the view containing InfoWindow contents
-                return viewMarkerInfo;
-
-            }
-        });
-
-
-
-
-    }
-
-    public void getReviewDetailFromDB(String tag){
-
-        Log.d("TAGUUID",tag);
-        reference = FirebaseDatabase.getInstance().getReference("reviews").child(tag);
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.d("PROVISSIMA",snapshot.getKey());
-                rhc = snapshot.getValue(ReviewHelperClass.class);
-                title = (TextView) viewMarkerInfo.findViewById(R.id.titleTextViewMarkerInfo);
-                Log.d("PROVISSIMA2",String.valueOf(rhc.getStars()));
-                Log.d("PROVISSIMA3",String.valueOf(title.getText()));
-                CharSequence stars = String.valueOf(rhc.getStars());
-                title.setText("PROVA");
-            }
-
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode==44){
@@ -297,4 +247,10 @@ public class MapsFragment extends Fragment {
     }
 
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        MainActivity ma =(MainActivity) getActivity();
+        ma.updateUI(mAuth.getCurrentUser());
+    }
 }

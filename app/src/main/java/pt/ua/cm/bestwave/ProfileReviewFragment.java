@@ -41,13 +41,7 @@ public class ProfileReviewFragment extends Fragment {
     UserHelperClass uhc;
     String uuidUser;
     String tag;
-    TextView nameTextView;
-    TextView surnameTextView;
-    TextView emailTextView;
-    TextView locationText;
-    TextView dateText;
-    TextView descriptionText;
-
+    TextView nameSurnameTextView,emailTextView,locationText,dateText,descriptionText;
     RatingBar ratingBar = null;
 
     Geocoder geocoder;
@@ -58,15 +52,18 @@ public class ProfileReviewFragment extends Fragment {
     DatabaseReference reference;
 
 
-    public ProfileReviewFragment(String tag) {
-        this.tag = tag;
+    public ProfileReviewFragment() {
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         database = FirebaseDatabase.getInstance();
-        getReviewsFromDB();
+        if(getArguments()!=null){
+            ProfileReviewFragmentArgs arg = ProfileReviewFragmentArgs.fromBundle(getArguments());
+            tag = arg.getCurrentTag();
+            getReviewsFromDB();
+        }
     }
 
     @Override
@@ -75,9 +72,9 @@ public class ProfileReviewFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile_review, container, false);
 
+
         // FIND VIEWS
-        nameTextView=view.findViewById(R.id.name_profile_review_text_view);
-        surnameTextView=view.findViewById(R.id.surname_profile_review_text_view);
+        nameSurnameTextView=view.findViewById(R.id.name_surname_profile_review_text_view);
         emailTextView=view.findViewById(R.id.email_profile_review_text_view);
         locationText=view.findViewById(R.id.profile_review_location);
         dateText=view.findViewById(R.id.profile_review_date);
@@ -124,8 +121,7 @@ public class ProfileReviewFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 uhc = snapshot.getValue(UserHelperClass.class);
-                nameTextView.setText(uhc.getName().toUpperCase());
-                surnameTextView.setText(uhc.getSurname().toUpperCase());
+                nameSurnameTextView.setText(uhc.getName().toUpperCase()+" "+uhc.getSurname().toUpperCase());
                 emailTextView.setText((uhc.getEmail()));
             }
 

@@ -1,6 +1,8 @@
 package pt.ua.cm.bestwave;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.view.Window;
@@ -33,7 +35,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //FIREBESE INSTNCE
         mAuth = FirebaseAuth.getInstance();
-        //FirebaseAuth.getInstance().signOut();
+
+        if(mAuth.getCurrentUser()==null){
+            Log.d("LOGOUT","LOGOUT");
+        }
+        else{
+            Log.d("LOGIN","LOGIN");
+        }
+
+
         setContentView(R.layout.activity_main);
         changeColorToBar();
         //SETTING TOOLBAR
@@ -59,8 +69,22 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         //SETTING NAV CONTROLLER
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        navigationView.getMenu().getItem(3).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getTitle().toString().equals("Logout")){
+                    mAuth.signOut();
+                    updateUI(mAuth.getCurrentUser());
+                }
+                return false;
+            }
+        });
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+
+
+
 
     }
 
@@ -77,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         if(account != null){//LOGGED
             navigationView.getMenu().getItem(3).setTitle("Logout");
         }else {//NOT LOGGED
-
+            navigationView.getMenu().getItem(3).setTitle("Login");
         }
 
     }
@@ -106,7 +130,9 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
+    @Override
+    public boolean onNavigateUp() {
+        return super.onNavigateUp();
 
-
-
+    }
 }

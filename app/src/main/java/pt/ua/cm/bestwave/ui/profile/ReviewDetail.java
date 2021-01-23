@@ -4,10 +4,12 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 import pt.ua.cm.bestwave.MainActivity;
+import pt.ua.cm.bestwave.ProfileReviewFragmentArgs;
 import pt.ua.cm.bestwave.R;
 import pt.ua.cm.bestwave.ui.review.ReviewHelperClass;
 
@@ -36,8 +39,14 @@ public class ReviewDetail extends Fragment {
     Geocoder geocoder;
     List<Address> addresses;
 
-    public ReviewDetail(ReviewHelperClass rhc) {
-        this.rhc = rhc;
+    public ReviewDetail() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ReviewDetailArgs arg = ReviewDetailArgs.fromBundle(getArguments());
+        rhc = arg.getCurrentRhc();
     }
 
     @Override
@@ -78,25 +87,19 @@ public class ReviewDetail extends Fragment {
             e.printStackTrace();
         }
 
-        String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-        String city = addresses.get(0).getLocality();
+        /*String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
         String state = addresses.get(0).getAdminArea();
         String country = addresses.get(0).getCountryName();
         String postalCode = addresses.get(0).getPostalCode();
-        String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
+        String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL*/ //DATA METHODS
+        String city = addresses.get(0).getLocality();
+
 
         locationText.setText((String) String.valueOf(city));
     }
 
     @Override
     public void onDestroy() {
-
-        ProfileFragment fragment = new ProfileFragment();
-        FragmentManager fm = ((MainActivity) getView().getContext()).getSupportFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        transaction.add(R.id.detailContainer, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
 
         super.onDestroy();
     }

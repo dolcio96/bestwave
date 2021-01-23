@@ -28,6 +28,7 @@ import java.util.HashMap;
 
 import pt.ua.cm.bestwave.R;
 import pt.ua.cm.bestwave.ui.authentication.UserHelperClass;
+import pt.ua.cm.bestwave.ui.maps.MapsFragmentDirections;
 import pt.ua.cm.bestwave.ui.review.ReviewHelperClass;
 
 public class ProfileFragment extends Fragment {
@@ -40,8 +41,7 @@ public class ProfileFragment extends Fragment {
     String uuidUser;
 
     ImageView imageProfileView;
-    TextView nameTextView;
-    TextView surnameTextView;
+    TextView nameSurnameTextView;
     TextView emailTextView;
 
     //FIREBASE STORAGE
@@ -81,8 +81,7 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         //GET VIEW PROFILE COMPONENTS
         imageProfileView=view.findViewById(R.id.profile_image_image_view);
-        nameTextView=view.findViewById(R.id.name_profile_text_view);
-        surnameTextView=view.findViewById(R.id.surname_profile_text_view);
+        nameSurnameTextView =view.findViewById(R.id.name_surname_profile_text_view);
         emailTextView=view.findViewById(R.id.email_profile_text_view);
         reviewRecyclerView=view.findViewById(R.id.recyclerviewItem);
         reviewRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -95,7 +94,6 @@ public class ProfileFragment extends Fragment {
                     if(uuidUser.equals(rhc.getUuidUser())){
                         reviewMap.put(ds.getKey(),rhc);
                     }
-
                 }
 
                 helperAdapterProfile =new HelperAdapterProfile(reviewMap);
@@ -123,8 +121,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 uhc = snapshot.getValue(UserHelperClass.class);
-                nameTextView.setText(uhc.getName().toUpperCase());
-                surnameTextView.setText(uhc.getSurname().toUpperCase());
+                nameSurnameTextView.setText(uhc.getName().toUpperCase()+" "+uhc.getSurname().toUpperCase());
                 emailTextView.setText((uhc.getEmail()));
                 //getReviewsFromDB();
             }

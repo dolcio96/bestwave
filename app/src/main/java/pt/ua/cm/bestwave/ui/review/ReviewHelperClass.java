@@ -1,9 +1,10 @@
 package pt.ua.cm.bestwave.ui.review;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-public class ReviewHelperClass {
+public class ReviewHelperClass implements Serializable {
     String uuidUser,description;
     float stars;
     double latitude,longitude;

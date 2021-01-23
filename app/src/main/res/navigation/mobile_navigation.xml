@@ -9,13 +9,20 @@
         android:id="@+id/nav_maps"
         android:name="pt.ua.cm.bestwave.ui.maps.MapsFragment"
         android:label="@string/menu_maps"
-        tools:layout="@layout/fragment_maps" />
+        tools:layout="@layout/fragment_maps" >
+        <action
+            android:id="@+id/navigateFromMapToProfileReview"
+            app:destination="@id/nav_profile_review" />
+    </fragment>
     <fragment
         android:id="@+id/nav_profile"
         android:name="pt.ua.cm.bestwave.ui.profile.ProfileFragment"
         android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_profile" />
-
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/navigateFromProfileToReviewDetail"
+            app:destination="@id/nav_review_detail" />
+    </fragment>
     <fragment
         android:id="@+id/nav_review"
         android:name="pt.ua.cm.bestwave.ui.review.ReviewFragment"
@@ -25,13 +32,19 @@
             android:id="@+id/navigateFromReviewToMap"
             app:destination="@id/nav_maps" />
     </fragment>
-
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="pt.ua.cm.bestwave.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
-
+        android:id="@+id/nav_profile_review"
+        android:name="pt.ua.cm.bestwave.ProfileReviewFragment"
+        android:label="Review"
+        tools:layout="@layout/fragment_profile_review">
+        <action
+            android:id="@+id/navigateFromProfileReviewToMap"
+            app:destination="@id/nav_maps" />
+        <argument
+            android:name="currentTag"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
     <fragment
         android:id="@+id/nav_login"
         android:name="pt.ua.cm.bestwave.ui.authentication.LoginFragment"
@@ -48,7 +61,11 @@
         android:id="@+id/nav_logout"
         android:name="pt.ua.cm.bestwave.ui.authentication.LoginFragment"
         android:label="@string/menu_logout"
-        />
+        >
+        <action
+            android:id="@+id/navigateFromLogoutToMap"
+            app:destination="@id/nav_maps" />
+    </fragment>
     <fragment
         android:id="@+id/nav_register"
         android:name="pt.ua.cm.bestwave.ui.authentication.RegisterFragment"
@@ -60,6 +77,20 @@
         <action
             android:id="@+id/navigateFromRegisterToMap"
             app:destination="@id/nav_maps" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_review_detail"
+        android:name="pt.ua.cm.bestwave.ui.profile.ReviewDetail"
+        android:label="ReviewDetail"
+        tools:layout="@layout/fragment_review_detail">
+        <action
+            android:id="@+id/navigateFromReviewDetailToProfile"
+            app:destination="@id/nav_profile" />
+        <argument
+            android:name="current_rhc"
+            app:argType="pt.ua.cm.bestwave.ui.review.ReviewHelperClass"
+            />
+
     </fragment>
 
 

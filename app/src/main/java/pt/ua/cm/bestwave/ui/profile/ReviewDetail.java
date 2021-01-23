@@ -12,9 +12,15 @@ import android.view.ViewGroup;
 
 import pt.ua.cm.bestwave.MainActivity;
 import pt.ua.cm.bestwave.R;
+import pt.ua.cm.bestwave.ui.review.ReviewHelperClass;
 
 
 public class ReviewDetail extends Fragment {
+    ReviewHelperClass rhc;
+
+    public ReviewDetail(ReviewHelperClass rhc) {
+        this.rhc = rhc;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

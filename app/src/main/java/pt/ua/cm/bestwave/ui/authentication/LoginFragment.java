@@ -14,6 +14,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,6 +32,8 @@ import pt.ua.cm.bestwave.R;
 
 
 public class LoginFragment extends Fragment {
+    //AUTHENTICATION
+    private FirebaseAuth mAuth;
     FirebaseDatabase database;
     DatabaseReference reference;
     EditText regUsername, regPassword;
@@ -35,7 +43,7 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
-
+        mAuth =FirebaseAuth.getInstance();
         regUsername = view.findViewById(R.id.editTextUsername);
         regPassword = view.findViewById(R.id.editTextPassword);
         buttonRegister = view.findViewById(R.id.button_signup);
@@ -62,6 +70,16 @@ public class LoginFragment extends Fragment {
         });
 
         return view;
+    }
+    public void loginUser(View view){
+        if(!validatePassword()){//!validateUsername()|
+
+        }
+        else{
+            logInUserValidate();
+        }
+
+
     }
 
     private Boolean validateUsername(){
@@ -95,13 +113,28 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    public void loginUser(View view){
-        if(!validateUsername()|!validatePassword()){
 
-        }
-        else{
-            isUser();
-        }
+
+    public void logInUserValidate(){
+        final String email = regUsername.getText().toString().trim();
+        final String password = regPassword.getText().toString().trim();
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Snackbar.make(getView(), "Welcome!", Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).setBackgroundTint(getActivity().getResources().getColor(R.color.md_green_500)).show();
+
+                            FirebaseUser user = mAuth.getCurrentUser();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("NOTLOGGED", "signInWithEmail:failure", task.getException());
+                        }
+                    }
+                });
+
 
 
     }
@@ -154,5 +187,7 @@ public class LoginFragment extends Fragment {
 
 
     }
+
+
 
 }

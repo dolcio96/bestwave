@@ -1,25 +1,32 @@
 package pt.ua.cm.bestwave.ui.review;
 
+import java.util.Date;
+import java.util.UUID;
+
 public class ReviewHelperClass {
-    String username,description,uuid;
+    String uuidUser,description;
     float stars;
     double latitude,longitude;
+    Date date;
 
-    public ReviewHelperClass(String username, double latitude, double longitude,  float stars, String description, String uuid) {
-        this.username = username;
+    public ReviewHelperClass() {
+
+    }
+    public ReviewHelperClass(String uuidUser, double latitude, double longitude,  float stars, String description,Date date) {
+        this.uuidUser = uuidUser;
         this.latitude = latitude;
         this.longitude = longitude;
         this.description = description;
-        this.uuid = uuid;
         this.stars = stars;
+        this.date = date;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUuidUser() {
+        return uuidUser;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUuidUser(String uuidUser) {
+        this.uuidUser = uuidUser;
     }
 
     public double getLatitude() {
@@ -46,12 +53,12 @@ public class ReviewHelperClass {
         this.description = description;
     }
 
-    public String getUuid() {
-        return uuid;
+    public Date getDate() {
+        return date;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public float getStars() {

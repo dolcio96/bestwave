@@ -3,6 +3,8 @@ package pt.ua.cm.bestwave.ui.maps;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -10,16 +12,22 @@ import androidx.fragment.app.FragmentTransaction;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -27,7 +35,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -44,8 +54,12 @@ import java.util.List;
 import java.util.Map;
 
 import pt.ua.cm.bestwave.MainActivity;
+import pt.ua.cm.bestwave.ProfileReviewFragment;
 import pt.ua.cm.bestwave.R;
 import pt.ua.cm.bestwave.SearchBarFragment;
+import pt.ua.cm.bestwave.ui.profile.HelperAdapterProfile;
+import pt.ua.cm.bestwave.ui.profile.ReviewDetail;
+import pt.ua.cm.bestwave.ui.review.ReviewHelperClass;
 
 public class MapsFragment extends Fragment {
 
@@ -55,6 +69,14 @@ public class MapsFragment extends Fragment {
     FusedLocationProviderClient client;
     GoogleMap map;
     SearchBarFragment bar;
+    //FIREBASE DATABASE
+    FirebaseDatabase database;
+    DatabaseReference reference;
+
+    ReviewHelperClass rhc;
+    View viewMarkerInfo;
+    TextView title;
+
 
     @Nullable
     @Override
@@ -99,8 +121,10 @@ public class MapsFragment extends Fragment {
                         public void onMapReady(GoogleMap googleMap) {
                             map = googleMap;
                             LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
-                            MarkerOptions options= new MarkerOptions().position(latLng).title("Current Location");
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
+                            MarkerOptions options= new MarkerOptions().position(latLng).title("Current Location")
+                                    .icon(BitmapDescriptorFactory.fromBitmap((getBitmapFromVectorDrawable(getContext(),R.drawable.ic_van_de_surf))))
+                                    .zIndex(999);
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,20));
                             googleMap.addMarker(options);
                             addSearchView(googleMap);
                             setMarkerToMap();
@@ -116,6 +140,21 @@ public class MapsFragment extends Fragment {
         });
     }
 
+    public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
+        Drawable drawable = ContextCompat.getDrawable(context, drawableId);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable = (DrawableCompat.wrap(drawable)).mutate();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+
     private void setMarkerToMap() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference().child("markers");
@@ -123,26 +162,43 @@ public class MapsFragment extends Fragment {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String tag = "";
                 String ltd = "";
                 String lng = "";
 
-                Map<String, HelperMap> helperMap =(Map<String, HelperMap>) snapshot.getValue();
-
                 for (DataSnapshot id : snapshot.getChildren()){
                     for(DataSnapshot ltdlng : id.getChildren()){
-
-
                         if(ltdlng.getKey().equals("latitude")){
                             ltd = String.valueOf(ltdlng.getValue());
                         }else{
                             lng = String.valueOf(ltdlng.getValue());
                         }
+                        tag=String.valueOf(id.getKey());
                     }
                     LatLng reviewPosition = new LatLng(Double.parseDouble(ltd),Double.parseDouble(lng));
-                    map.addMarker(new MarkerOptions().position(reviewPosition));
+                    Marker marker =  map.addMarker(new MarkerOptions()
+                            .position(reviewPosition));
+                    //marker.setTitle("View Review");
+                    marker.setTag(tag);
+                    Log.d("TAG",tag);
+                    map.addMarker(new MarkerOptions().position(reviewPosition)).setTitle("View Review");
+                    map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+                            Log.d("PROVA","PROVA");
+                            ProfileReviewFragment fragment = new ProfileReviewFragment();
+                            FragmentManager fm = getActivity().getSupportFragmentManager();
+                            FragmentTransaction transaction = fm.beginTransaction();
+                            transaction.replace(R.id.map, fragment);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
+
+                            return false;
+                        }
+                    });
+                    //setMarkerInfoWindow();
+
                 }
-
-
             }
 
             @Override
@@ -161,8 +217,71 @@ public class MapsFragment extends Fragment {
         ft.add(R.id.map,bar).addToBackStack(null).commit();
     }
 
+    private void setMarkerInfoWindow(){
+
+        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            // Use default InfoWindow frame
+            @Override
+            public View getInfoWindow(Marker args) {
+                return null;
+            }
+
+            // Defines the contents of the InfoWindow
+            @Override
+            public View getInfoContents(Marker args) {
+
+                // Getting view from the layout file info_window_layout
+                viewMarkerInfo = getLayoutInflater().inflate(R.layout.info_window_layout, null);
+                Log.d("MINCHIA",String.valueOf(args.getTag()));
+                getReviewDetailFromDB(String.valueOf(args.getTag()));
+                // Getting the position from the marker
 
 
+                map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    public void onInfoWindowClick(Marker marker) {
+                        Log.d("MARKEROK2","MARKEROK2");
+
+
+
+                    }
+                });
+
+                // Returning the view containing InfoWindow contents
+                return viewMarkerInfo;
+
+            }
+        });
+
+
+
+
+    }
+
+    public void getReviewDetailFromDB(String tag){
+
+        Log.d("TAGUUID",tag);
+        reference = FirebaseDatabase.getInstance().getReference("reviews").child(tag);
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Log.d("PROVISSIMA",snapshot.getKey());
+                    rhc = snapshot.getValue(ReviewHelperClass.class);
+                    title = (TextView) viewMarkerInfo.findViewById(R.id.titleTextViewMarkerInfo);
+                    Log.d("PROVISSIMA2",String.valueOf(rhc.getStars()));
+                    Log.d("PROVISSIMA3",String.valueOf(title.getText()));
+                    CharSequence stars = String.valueOf(rhc.getStars());
+                    title.setText("PROVA");
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode==44){

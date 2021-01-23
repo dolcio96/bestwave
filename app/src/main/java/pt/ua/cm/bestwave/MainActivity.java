@@ -9,6 +9,8 @@ import android.view.WindowManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
@@ -20,22 +22,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
-
     private AppBarConfiguration mAppBarConfiguration;
-
+    NavigationView navigationView;
+    //FIREBASE
+    private FirebaseAuth mAuth;
     public boolean logged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //FIREBESE INSTNCE
+        mAuth = FirebaseAuth.getInstance();
+        //FirebaseAuth.getInstance().signOut();
         setContentView(R.layout.activity_main);
         changeColorToBar();
-
-
-
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        //SETTING TOOLBAR
+        Toolbar toolbar = findViewById(R.id.toolbarMain);
         setSupportActionBar(toolbar);
+        //SETTING FAB
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,17 +48,38 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        //SETTING DRAWER LAYOUT
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_maps, R.id.nav_review, R.id.nav_profile, R.id.nav_login)
                 .setDrawerLayout(drawer)
                 .build();
+        //SETTING NAV CONTROLLER
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
+    }
+
+    public void updateUI(FirebaseUser account){
+
+        if(account != null){//LOGGED
+            navigationView.getMenu().getItem(3).setTitle("Logout");
+        }else {//NOT LOGGED
+
+        }
+
     }
 
     private void changeColorToBar(){
@@ -80,4 +105,8 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+
+
+
 }

@@ -34,6 +34,11 @@
         android:label="@string/menu_login"
         tools:layout="@layout/fragment_login" />
     <fragment
+        android:id="@+id/nav_logout"
+        android:name="pt.ua.cm.bestwave.ui.authentication.LoginFragment"
+        android:label="@string/menu_logout"
+        />
+    <fragment
         android:id="@+id/nav_register"
         android:name="pt.ua.cm.bestwave.ui.authentication.RegisterFragment"
         android:label="@string/menu_register"

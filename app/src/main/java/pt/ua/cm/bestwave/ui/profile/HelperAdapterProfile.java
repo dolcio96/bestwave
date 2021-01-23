@@ -15,23 +15,32 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
 import pt.ua.cm.bestwave.MainActivity;
 import pt.ua.cm.bestwave.R;
+import pt.ua.cm.bestwave.ui.review.ReviewHelperClass;
 
 public class HelperAdapterProfile extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
-    View view;
-    ArrayList<String> arrayListName = new ArrayList<String>();
+    ReviewHelperClass rhc;
+    ArrayList<ReviewHelperClass> arrayListReview = new ArrayList<ReviewHelperClass>();
     ProfileViewHolderClass viewHolderClass;
-    Boolean isPhone = false;
-    ImageButton buttonReviewDetail;
+    HashMap<String, ReviewHelperClass> reviewMap;
 
-    public HelperAdapterProfile(){
+    public HelperAdapterProfile(HashMap<String, ReviewHelperClass> reviewMap){
         this.context=context;
+        this.reviewMap=reviewMap;
+
+        for (Map.Entry entry : reviewMap.entrySet()) {
+
+            arrayListReview.add((ReviewHelperClass)entry.getValue());
+        }
+
     }
 
 
@@ -40,13 +49,20 @@ public class HelperAdapterProfile extends RecyclerView.Adapter<RecyclerView.View
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rw_profile,parent,false);
         viewHolderClass= new ProfileViewHolderClass(view);
-        // onClick handler for review detail
-        buttonReviewDetail = view.findViewById(R.id.openInfoReviewProfileButtonImage);
-        buttonReviewDetail.setOnClickListener(new View.OnClickListener() {
+        return viewHolderClass;
+    }
 
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        viewHolderClass=(ProfileViewHolderClass)holder;
+        rhc = arrayListReview.get(position);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        viewHolderClass.textViewDate.setText(String.valueOf(formatter.format(rhc.getDate())));
+        viewHolderClass.textViewScore.setText(String.valueOf(rhc.getStars())+"/5");
+        viewHolderClass.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ReviewDetail fragment = new ReviewDetail();
+                ReviewDetail fragment = new ReviewDetail(rhc);
                 FragmentManager fm = ((MainActivity) v.getContext()).getSupportFragmentManager();
                 FragmentTransaction transaction = fm.beginTransaction();
                 transaction.add(R.id.profile_container, fragment);
@@ -54,30 +70,16 @@ public class HelperAdapterProfile extends RecyclerView.Adapter<RecyclerView.View
                 transaction.commit();
             }
         });
-        return viewHolderClass;
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        viewHolderClass=(ProfileViewHolderClass)holder;
-        viewHolderClass.textViewDate.setText("30/04/1996");
-        viewHolderClass.textViewScore.setText("3/5");
-        viewHolderClass.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
 
     }
 
     @Override
     public int getItemCount() {
-        return 2;
+        return arrayListReview.size();
     }
 
     public class ProfileViewHolderClass extends RecyclerView.ViewHolder {
-        TextView textViewDate;
-        TextView textViewScore;
+        TextView textViewDate,textViewScore;
         public ProfileViewHolderClass(@NonNull View itemView) {
             super(itemView);
             textViewDate=(TextView)itemView.findViewById(R.id.dataTextViewProfile);

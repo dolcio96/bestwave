@@ -1,13 +1,15 @@
 package pt.ua.cm.bestwave.ui.authentication;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,16 +29,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import pt.ua.cm.bestwave.MainActivity;
 import pt.ua.cm.bestwave.R;
 
 
 public class LoginFragment extends Fragment {
     //AUTHENTICATION
     private FirebaseAuth mAuth;
-    FirebaseDatabase database;
-    DatabaseReference reference;
-    EditText regUsername, regPassword;
+    EditText regEmail, regPassword;
     Button buttonRegister,buttonLogin;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,18 +43,13 @@ public class LoginFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         mAuth =FirebaseAuth.getInstance();
-        regUsername = view.findViewById(R.id.editTextUsername);
+        regEmail = view.findViewById(R.id.editEmail);
         regPassword = view.findViewById(R.id.editTextPassword);
         buttonRegister = view.findViewById(R.id.button_signup);
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RegisterFragment fragment = new RegisterFragment();
-                FragmentManager fm = ((MainActivity) v.getContext()).getSupportFragmentManager();
-                FragmentTransaction transaction = fm.beginTransaction();
-                transaction.replace(R.id.container_login, fragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                Navigation.findNavController(v).navigate(R.id.navigateFromLoginToRegister);
             }
         });
         buttonLogin = view.findViewById(R.id.button_login);
@@ -72,39 +66,39 @@ public class LoginFragment extends Fragment {
         return view;
     }
     public void loginUser(View view){
-        if(!validatePassword()){//!validateUsername()|
-
-        }
-        else{
+        if(isValidEmail() && isValidPassword()){
             logInUserValidate();
         }
-
-
-    }
-
-    private Boolean validateUsername(){
-        String val = regUsername.getText().toString();
-        String noWhiteSpace = "\\A\\w{4,20}\\z";
-        if (val.isEmpty()){
-            regUsername.setError("Field cannot be empty");
-            return false;
-        }
-        else if (!val.matches(noWhiteSpace)){
-            regUsername.setError("White Spaces are not allowed");
-            return false;
-        }
         else{
-            regUsername.setError(null);
-            return true;
+            drawSnackbar("Check the fields",R.color.md_red_500).show();
         }
+
 
     }
 
-    private Boolean validatePassword(){
-        String val = regPassword.getText().toString();
+    public boolean isValidEmail() {
+        String email = regEmail.getText().toString();
+        if (TextUtils.isEmpty(email)){
+            regEmail.setError("Field cannot be empty!");
+            return false;
+        }
+        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            regEmail.setError("Wrong email format!");
+            return false;
+        }
+        regEmail.setError(null);
+        return true;
+    }
+
+    private Boolean isValidPassword(){
+        String pass = regPassword.getText().toString();
         String noWhiteSpace = "\\A\\w{4,20}\\z";
-        if (val.isEmpty()){
-            regPassword.setError("Field cannot be empty");
+        if (pass.isEmpty()){
+            regPassword.setError("Field cannot be empty!");
+            return false;
+        }
+        if(pass.length()<8){
+            regPassword.setError("Password must be longer than 8 charachters!");
             return false;
         }
         else{
@@ -113,81 +107,31 @@ public class LoginFragment extends Fragment {
         }
     }
 
-
-
     public void logInUserValidate(){
-        final String email = regUsername.getText().toString().trim();
+        final String email = regEmail.getText().toString().trim();
         final String password = regPassword.getText().toString().trim();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Snackbar.make(getView(), "Welcome!", Snackbar.LENGTH_LONG)
-                                    .setAction("Action", null).setBackgroundTint(getActivity().getResources().getColor(R.color.md_green_500)).show();
-
+                            // Sign in success, update UI with the signed-in user's informations
+                            drawSnackbar("Welcome " + email + " !",R.color.md_green_500).show();
                             FirebaseUser user = mAuth.getCurrentUser();
+                            //NAVIGATE TO HOME (MAP)
+                            Navigation.findNavController(getView()).navigate(R.id.navigateFromLoginToMap);
                         } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w("NOTLOGGED", "signInWithEmail:failure", task.getException());
+                            drawSnackbar("Fail to login, try later",R.color.md_red_500).show();
                         }
                     }
                 });
-
-
-
     }
 
-    private void isUser() {
-        final String userEnteredUsername = regUsername.getText().toString().trim();
-        final String userEnteredPassword = regPassword.getText().toString().trim();
-
-        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("users");
-
-        Query checkUser = ref.orderByChild("username").equalTo(userEnteredUsername);
-
-        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                if(dataSnapshot.exists()){
-
-                    regUsername.setError(null);
-
-                    String passwordFromDB = dataSnapshot.child(userEnteredUsername).child("password").getValue(String.class);
-
-                    if(passwordFromDB.equals(userEnteredPassword)){
-
-                        String nameFromDB = dataSnapshot.child(userEnteredUsername).child("name").getValue(String.class);
-                        String surnameFromDB = dataSnapshot.child(userEnteredUsername).child("surname").getValue(String.class);
-
-                        Log.d("FUNGE","FUNGE");
-
-
-                    }
-                    else {
-                        regPassword.setError("Wrong Password");
-                        regPassword.requestFocus();
-                    }
-                }
-                else {
-                    regUsername.setError("No such User exist");
-                    regUsername.requestFocus();
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
+    private Snackbar drawSnackbar(String text, int color){
+        Snackbar snackbar =  Snackbar.make(getView(), text, Snackbar.LENGTH_LONG)
+                .setBackgroundTint(getActivity().getResources().getColor(color));
+        return snackbar;
     }
-
 
 
 }

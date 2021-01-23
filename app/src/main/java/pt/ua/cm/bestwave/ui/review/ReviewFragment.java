@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -200,25 +201,14 @@ public class ReviewFragment extends Fragment {
                 if (checkFields()) {
                     uuidImage = UUID.randomUUID().toString();
                     uploadImage();
-                    if (sendDataToDatabase()) {
-                        FragmentActivity a = getActivity();
-                        Bitmap icon = BitmapFactory.decodeResource(a.getResources(), R.mipmap.camera_image);
-                        ratingBar.setRating(Float.parseFloat("0.0"));
-                        //TODO Implement set image for camera
-                        //imageButton.setImageBitmap(iconCamera);
-                        //editText.setText("");
-                        Snackbar.make(view, "Review added!", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).setBackgroundTint(getActivity().getResources().getColor(R.color.holoBlueDark)).show();
+                    sendDataToDatabase();
+                    drawSnackbar("Review added!",R.color.holoBlueDark).show();
+                    Navigation.findNavController(view).navigate(R.id.navigateFromReviewToMap);
+                    drawSnackbar("Data upload failure, try later!",R.color.md_red_500).show();
 
-                    } else {
-                        Snackbar.make(view, "Data upload failure, try later!", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).setBackgroundTint(getActivity().getResources().getColor(R.color.md_red_500)).show();
-                    }
 
                 } else {
-                    Snackbar.make(view, "Some fields are empty!", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).setBackgroundTint(getActivity().getResources().getColor(R.color.md_red_500)).show();
-
+                    drawSnackbar("Some fields are empty!",R.color.md_red_500).show();
                 }
             }
 
@@ -335,7 +325,7 @@ public class ReviewFragment extends Fragment {
         }
     }
     //SEND REVIEW TO DATABASE
-    private boolean sendDataToDatabase() {
+    private void sendDataToDatabase() {
         //Initialize firebase database
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("reviews");
@@ -346,7 +336,6 @@ public class ReviewFragment extends Fragment {
         reference.child(uuidImage).setValue(reviewHelperClass);
         sendMarkerTDB();
 
-        return true;
     }
     //SEND MARKER TO DATABASE
     private void sendMarkerTDB() {
@@ -356,6 +345,12 @@ public class ReviewFragment extends Fragment {
 
         HelperMap helperMap = new HelperMap(latLng.latitude, latLng.longitude);
         reference.child(uuidImage).setValue(helperMap);
+    }
+
+    private Snackbar drawSnackbar(String text, int color) {
+        Snackbar snackbar = Snackbar.make(getView(), text, Snackbar.LENGTH_LONG)
+                .setBackgroundTint(getActivity().getResources().getColor(color));
+        return snackbar;
     }
     //ON ACTIVITY RESULT FROM CAMERA
     @Override
@@ -381,5 +376,9 @@ public class ReviewFragment extends Fragment {
                         .setAction("Action", null).setBackgroundTint(getActivity().getResources().getColor(R.color.md_red_500)).show();
             }
         }
+
+
+
+
 
 }

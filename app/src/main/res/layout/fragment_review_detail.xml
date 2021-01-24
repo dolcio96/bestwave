@@ -45,6 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/location_container"
+        android:layout_margin="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageContainer">
 
@@ -64,6 +65,7 @@
             android:text="Praia da Barra (Aveiro)"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textSize="21dp"
+
             >
         </TextView>
 

@@ -2,8 +2,10 @@ package pt.ua.cm.bestwave.ui.profile;
 
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -13,8 +15,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -30,6 +39,8 @@ import pt.ua.cm.bestwave.ui.review.ReviewHelperClass;
 
 public class ReviewDetail extends Fragment {
     ReviewHelperClass rhc;
+    String tag;
+    ImageView reviewImage;
     TextView locationText;
     TextView dateText;
     TextView descriptionText;
@@ -38,6 +49,9 @@ public class ReviewDetail extends Fragment {
 
     Geocoder geocoder;
     List<Address> addresses;
+    FirebaseStorage storage;
+    StorageReference storageReference;
+    View view;
 
     public ReviewDetail() {
     }
@@ -47,15 +61,19 @@ public class ReviewDetail extends Fragment {
         super.onCreate(savedInstanceState);
         ReviewDetailArgs arg = ReviewDetailArgs.fromBundle(getArguments());
         rhc = arg.getCurrentRhc();
+        tag =arg.getTag();
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_review_detail, container, false);
+        view = inflater.inflate(R.layout.fragment_review_detail, container, false);
 
         // FIND VIEWS
+        reviewImage = view.findViewById(R.id.imageReview);
         locationText = view.findViewById(R.id.locationReview);
         dateText = view.findViewById(R.id.dateReview);
         descriptionText = view.findViewById(R.id.descriptionText);
@@ -78,7 +96,7 @@ public class ReviewDetail extends Fragment {
     }
 
     // GET COMPLETE ADDRESS FROM LATITUDE AND LONGITUDE
-    public void getCompleteAddress(){
+    public void getCompleteAddress() {
 
         geocoder = new Geocoder(getActivity(), Locale.getDefault());
         try {
@@ -99,8 +117,33 @@ public class ReviewDetail extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getReviewImage();
+    }
+
+    @Override
     public void onDestroy() {
 
         super.onDestroy();
+    }
+
+
+    public void getReviewImage() {
+        storageReference.child("images/" + tag)
+                .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+
+               Glide.with(view.getContext()).load(uri).centerCrop().into(reviewImage);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+
     }
 }

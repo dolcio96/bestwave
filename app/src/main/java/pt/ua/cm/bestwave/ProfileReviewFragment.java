@@ -1,7 +1,9 @@
 package pt.ua.cm.bestwave;
 
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,10 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.ViewTarget;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -43,6 +50,7 @@ public class ProfileReviewFragment extends Fragment {
     String tag;
     TextView nameSurnameTextView,emailTextView,locationText,dateText,descriptionText;
     RatingBar ratingBar = null;
+    ImageView profileImage,reviewImage;
 
     Geocoder geocoder;
     List<Address> addresses;
@@ -51,6 +59,9 @@ public class ProfileReviewFragment extends Fragment {
     FirebaseDatabase database;
     DatabaseReference reference;
 
+    FirebaseStorage storage;
+    StorageReference storageReference;
+    View view;
 
     public ProfileReviewFragment() {
     }
@@ -59,21 +70,21 @@ public class ProfileReviewFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         database = FirebaseDatabase.getInstance();
-        if(getArguments()!=null){
-            ProfileReviewFragmentArgs arg = ProfileReviewFragmentArgs.fromBundle(getArguments());
-            tag = arg.getCurrentTag();
-            getReviewsFromDB();
-        }
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_profile_review, container, false);
+        view = inflater.inflate(R.layout.fragment_profile_review, container, false);
 
 
         // FIND VIEWS
+        reviewImage =view.findViewById(R.id.imageReview);
+        profileImage=view.findViewById(R.id.profile_image_image_view);
         nameSurnameTextView=view.findViewById(R.id.name_surname_profile_review_text_view);
         emailTextView=view.findViewById(R.id.email_profile_review_text_view);
         locationText=view.findViewById(R.id.profile_review_location);
@@ -82,6 +93,18 @@ public class ProfileReviewFragment extends Fragment {
         ratingBar=view.findViewById(R.id.profile_review_ratingBar);
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if(getArguments()!=null){
+            ProfileReviewFragmentArgs arg = ProfileReviewFragmentArgs.fromBundle(getArguments());
+            tag = arg.getCurrentTag();
+            getReviewsFromDB();
+        }
+
+
     }
 
     public void getReviewsFromDB(){
@@ -101,8 +124,8 @@ public class ProfileReviewFragment extends Fragment {
                 ratingBar.setIsIndicator(true);
                 //SET descriptionText
                 descriptionText.setText(rhc.getDescription());
-
                 getUserFromDB();
+                getReviewImage();
 
             }
 
@@ -123,6 +146,8 @@ public class ProfileReviewFragment extends Fragment {
                 uhc = snapshot.getValue(UserHelperClass.class);
                 nameSurnameTextView.setText(uhc.getName().toUpperCase()+" "+uhc.getSurname().toUpperCase());
                 emailTextView.setText((uhc.getEmail()));
+
+                getProfileImage();
             }
 
             @Override
@@ -151,4 +176,48 @@ public class ProfileReviewFragment extends Fragment {
 
         locationText.setText((String) String.valueOf(city));
     }
+
+    public void getProfileImage(){
+        storageReference.child("profileImages/"+rhc.getUuidUser())
+                .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+
+                    Glide.with(view.getContext()).load(uri).centerCrop().into(profileImage);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+
+
+    }
+
+    public void getReviewImage(){
+        storageReference.child("images/"+tag)
+                .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+
+                    Glide.with(view.getContext()).load(uri).centerCrop().into(reviewImage);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }
+

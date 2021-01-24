@@ -1,6 +1,10 @@
 package pt.ua.cm.bestwave.ui.profile;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +15,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +34,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.IOException;
+import java.net.URI;
 import java.util.HashMap;
 
 import pt.ua.cm.bestwave.R;
@@ -56,11 +68,6 @@ public class ProfileFragment extends Fragment {
     HashMap<String,ReviewHelperClass> reviewMap = new HashMap<String, ReviewHelperClass>();
 
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,7 +78,15 @@ public class ProfileFragment extends Fragment {
         storage = FirebaseStorage.getInstance();
         // get the Firebase  storage reference
         storageReference = storage.getReference();
-        getUserFromDB();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(user!=null){
+            getUserFromDB();
+
+        }
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -79,12 +94,74 @@ public class ProfileFragment extends Fragment {
         homeViewModel =
                 ViewModelProviders.of(this).get(ProfileViewModel.class);
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
         //GET VIEW PROFILE COMPONENTS
         imageProfileView=view.findViewById(R.id.profile_image_image_view);
         nameSurnameTextView =view.findViewById(R.id.name_surname_profile_text_view);
         emailTextView=view.findViewById(R.id.email_profile_text_view);
         reviewRecyclerView=view.findViewById(R.id.recyclerviewItem);
         reviewRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if(mAuth.getCurrentUser()==null){
+            drawSnackbar("You have to login before",R.color.md_red_500).show();
+            Navigation.findNavController(view).navigate(R.id.navigateFromProfileToLogin);
+        }else {
+            getReviewsFromDB();
+        }
+
+    }
+
+    //GET USER FROM DB
+    public void getUserFromDB(){
+
+        uuidUser = user.getUid();
+        reference = database.getReference("users").child(uuidUser);
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                uhc = snapshot.getValue(UserHelperClass.class);
+                nameSurnameTextView.setText(uhc.getName().toUpperCase()+" "+uhc.getSurname().toUpperCase());
+                emailTextView.setText((uhc.getEmail()));
+                //GET USER IMAGE
+                getUserImage();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void getUserImage(){
+        storageReference.child("profileImages/"+user.getUid())
+                .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(getContext()).load(uri).centerCrop().into(imageProfileView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+
+
+
+
+    }
+
+    public void getReviewsFromDB(){
         reference = FirebaseDatabase.getInstance().getReference("reviews");
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -105,59 +182,12 @@ public class ProfileFragment extends Fragment {
 
             }
         });
-
-        return view;
     }
 
 
-
-    //GET USER FROM DB
-    public void getUserFromDB(){
-
-        uuidUser = user.getUid();
-        reference = database.getReference("users").child(uuidUser);
-
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                uhc = snapshot.getValue(UserHelperClass.class);
-                nameSurnameTextView.setText(uhc.getName().toUpperCase()+" "+uhc.getSurname().toUpperCase());
-                emailTextView.setText((uhc.getEmail()));
-                //getReviewsFromDB();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+    private Snackbar drawSnackbar(String text, int color){
+        Snackbar snackbar =  Snackbar.make(getView(), text, Snackbar.LENGTH_LONG)
+                .setBackgroundTint(getActivity().getResources().getColor(color));
+        return snackbar;
     }
-
-    public void getReviewsFromDB(){
-        reference = database.getReference("reviews");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot uuidImage : snapshot.getChildren()){
-
-                    ReviewHelperClass rhc = uuidImage.getValue(ReviewHelperClass.class);
-
-                    if (rhc.getUuidUser().equals(uuidUser)){
-                        reviewMap.put(uuidImage.getKey(),rhc);
-                    }
-
-                }
-
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-
 }

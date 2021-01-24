@@ -1,81 +1,122 @@
 package pt.ua.cm.bestwave.ui.profile;
 
 import android.content.Context;
-import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.Serializable;
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import pt.ua.cm.bestwave.MainActivity;
 import pt.ua.cm.bestwave.R;
-import pt.ua.cm.bestwave.ui.maps.MapsFragmentDirections;
 import pt.ua.cm.bestwave.ui.review.ReviewHelperClass;
 
-public class HelperAdapterProfile extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class HelperAdapterProfile
+        extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context context;
     ReviewHelperClass rhc;
     ArrayList<ReviewHelperClass> arrayListReview = new ArrayList<ReviewHelperClass>();
+    ArrayList<String> keys = new ArrayList<String>();
+    ArrayList<ImageView> listOfViewOlderImages = new ArrayList<ImageView>();
     ProfileViewHolderClass viewHolderClass;
     HashMap<String, ReviewHelperClass> reviewMap;
     View view;
 
+    FirebaseStorage storage;
+    StorageReference storageReference;
+
+    public class ProfileViewHolderClass extends RecyclerView.ViewHolder {
+        TextView textViewDate,textViewScore;
+        ImageView imageView;
+        final HelperAdapterProfile mAdapter;
+        public ProfileViewHolderClass(@NonNull View itemView, HelperAdapterProfile adapter) {
+            super(itemView);
+            this.mAdapter = adapter;
+            textViewDate=(TextView)itemView.findViewById(R.id.dataTextViewProfile);
+            textViewScore=(TextView)itemView.findViewById(R.id.starTextViewProfile);
+            imageView=(ImageView)itemView.findViewById(R.id.imageReviewImageView);
+        }
+    }
+
+
     public HelperAdapterProfile(HashMap<String, ReviewHelperClass> reviewMap){
         this.context=context;
         this.reviewMap=reviewMap;
-
         for (Map.Entry entry : reviewMap.entrySet()) {
-
             arrayListReview.add((ReviewHelperClass)entry.getValue());
+            keys.add((String)entry.getKey());
         }
-
     }
-
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+
         view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rw_profile,parent,false);
-        viewHolderClass= new ProfileViewHolderClass(view);
-        return viewHolderClass;
+        //viewHolderClass= new ProfileViewHolderClass(view);
+        return new ProfileViewHolderClass(view,this);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         viewHolderClass=(ProfileViewHolderClass)holder;
+
         rhc = arrayListReview.get(position);
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+        Log.d("qwerty",String.valueOf(position));
+        Log.d("qwerty",String.valueOf(rhc.getDescription()));
+
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM");
         viewHolderClass.textViewDate.setText(String.valueOf(formatter.format(rhc.getDate())));
         viewHolderClass.textViewScore.setText(String.valueOf(rhc.getStars())+"/5");
+
+
+        listOfViewOlderImages.add((ImageView) viewHolderClass.imageView);
+        storageReference.child("images/"+keys.get(position))
+                .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(viewHolderClass.imageView.getContext()).load(uri).centerCrop().into(listOfViewOlderImages.get(position));
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+        viewHolderClass.itemView.setTag(keys.get(position));
         viewHolderClass.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 ProfileFragmentDirections.NavigateFromProfileToReviewDetail action =
-                        ProfileFragmentDirections.navigateFromProfileToReviewDetail(rhc);
-                action.setCurrentRhc(rhc);
+                        ProfileFragmentDirections.navigateFromProfileToReviewDetail(reviewMap.get(v.getTag()));
+                action.setCurrentRhc(reviewMap.get(v.getTag()));
+                action.setTag(String.valueOf(v.getTag()));
+
                 Navigation.findNavController(view).navigate(action);
-                /*ReviewDetail fragment = new ReviewDetail(rhc);
-                FragmentManager fm = ((MainActivity) v.getContext()).getSupportFragmentManager();
-                FragmentTransaction transaction = fm.beginTransaction();
-                transaction.add(R.id.profile_container, fragment);
-                transaction.addToBackStack(null);
-                transaction.commit();*/
+
             }
         });
 
@@ -86,14 +127,8 @@ public class HelperAdapterProfile extends RecyclerView.Adapter<RecyclerView.View
         return arrayListReview.size();
     }
 
-    public class ProfileViewHolderClass extends RecyclerView.ViewHolder {
-        TextView textViewDate,textViewScore;
-        public ProfileViewHolderClass(@NonNull View itemView) {
-            super(itemView);
-            textViewDate=(TextView)itemView.findViewById(R.id.dataTextViewProfile);
-            textViewScore=(TextView)itemView.findViewById(R.id.starTextViewProfile);
-        }
-    }
-}
 
+
+
+}
 

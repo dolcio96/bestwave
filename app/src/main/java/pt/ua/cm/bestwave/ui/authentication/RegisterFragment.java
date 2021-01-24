@@ -78,8 +78,8 @@ public class RegisterFragment extends Fragment {
     ImageView btnImage;
     Bitmap imageBitmap =null;
     Uri filePath;
-    String uuidImageProfile;
     View view;
+    FirebaseUser user;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -144,11 +144,7 @@ public class RegisterFragment extends Fragment {
 
                 if (validateFields()) {
                     createUser();
-                    if(filePath!=null){
-                        uuidImageProfile = UUID.randomUUID().toString();
-                        uploadImageOnStorage();
 
-                    }
                 } else {
                     drawSnackbar("Some fields doesn't respect the format", R.color.md_red_500).show();
                 }
@@ -181,11 +177,14 @@ public class RegisterFragment extends Fragment {
     public void addUserToDB() {
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("users");
-        FirebaseUser user = mAuth.getCurrentUser();
+        user = mAuth.getCurrentUser();
         UserHelperClass userHelperClass = new UserHelperClass(username, email, name, surname, password);
         reference.child(user.getUid()).setValue(userHelperClass);
         //NAVIGATE TO HOME (MAP)
         Navigation.findNavController(view).navigate(R.id.navigateFromRegisterToMap);
+        if(filePath!=null){
+            uploadImageOnStorage();
+        }
     }
 
     private Snackbar drawSnackbar(String text, int color) {
@@ -310,7 +309,7 @@ public class RegisterFragment extends Fragment {
 
     private void uploadImageOnStorage(){
         if (filePath != null) {
-            storageReference = storage.getReference().child("profileImages/" + uuidImageProfile);
+            storageReference = storage.getReference().child("profileImages/" + user.getUid());
 
             storageReference.putFile(filePath)
                     .addOnSuccessListener(

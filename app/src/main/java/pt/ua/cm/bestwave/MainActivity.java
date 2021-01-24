@@ -1,5 +1,6 @@
 package pt.ua.cm.bestwave;
 
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -8,8 +9,9 @@ import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
 
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,9 +28,9 @@ import androidx.appcompat.widget.Toolbar;
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     NavigationView navigationView;
+    DrawerLayout drawer;
     //FIREBASE
     private FirebaseAuth mAuth;
-    public boolean logged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +53,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         //SETTING FAB
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
         //SETTING DRAWER LAYOUT
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -69,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         //SETTING NAV CONTROLLER
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
+        setNavViewOnClickItem();
         navigationView.getMenu().getItem(3).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -100,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(account != null){//LOGGED
             navigationView.getMenu().getItem(3).setTitle("Logout");
+
+
         }else {//NOT LOGGED
             navigationView.getMenu().getItem(3).setTitle("Login");
         }
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        //getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -130,9 +130,19 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    @Override
-    public boolean onNavigateUp() {
-        return super.onNavigateUp();
+   private void setNavViewOnClickItem(){
 
-    }
+       navigationView.getMenu().getItem(3).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+
+                    if (item.getTitle().toString().equals("Logout")){
+                        mAuth.signOut();
+                        updateUI(mAuth.getCurrentUser());
+                    }
+                return false;
+            }
+        });
+
+   }
 }

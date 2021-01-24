@@ -42,6 +42,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -68,20 +69,12 @@ public class MapsFragment extends Fragment {
 
     SupportMapFragment supportMapFragment;
     FragmentManager fm;
-    SearchView searchView;
     FusedLocationProviderClient client;
     GoogleMap map;
     SearchBarFragment bar;
-    //FIREBASE DATABASE
-    FirebaseDatabase database;
-    DatabaseReference reference;
-
     String tag;
-    ReviewHelperClass rhc;
-    View viewMarkerInfo;
-    TextView title;
     View view;
-    FirebaseUser user;
+    LatLng currentLatLng;
     private FirebaseAuth mAuth;
 
     @Override
@@ -98,12 +91,20 @@ public class MapsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_maps, container, false);
+
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,8));
+            }
+        });
 
         supportMapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
@@ -132,8 +133,8 @@ public class MapsFragment extends Fragment {
                         @Override
                         public void onMapReady(GoogleMap googleMap) {
                             map = googleMap;
-                            LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
-                            Marker marker =  map.addMarker(new MarkerOptions().position(latLng)
+                            currentLatLng = new LatLng(location.getLatitude(),location.getLongitude());
+                            Marker marker =  map.addMarker(new MarkerOptions().position(currentLatLng)
                                     .icon(BitmapDescriptorFactory.fromBitmap((getBitmapFromVectorDrawable(getContext(),R.drawable.ic_van_de_surf))))
                                     .title("Current Location")
                                     .zIndex(999));
@@ -143,7 +144,7 @@ public class MapsFragment extends Fragment {
                                     .icon(BitmapDescriptorFactory.fromBitmap((getBitmapFromVectorDrawable(getContext(),R.drawable.ic_van_de_surf))))
                                     .zIndex(999);
                             googleMap.addMarker(options);*/
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,20));
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,7));
                             addSearchView(googleMap);
                             setMarkerToMap();
                         }

@@ -116,8 +116,9 @@ public class ReviewFragment extends Fragment {
         getLocation();
         // get the Firebase  storage reference
         storageReference = storage.getReference();
-        //TODO ADD CHECH FOR NON LOGGED USER, REDIRECT TO LOGGIN
-        getUserFromDB();
+        if(user!=null){
+            getUserFromDB();
+        }
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -204,7 +205,7 @@ public class ReviewFragment extends Fragment {
                     sendDataToDatabase();
                     drawSnackbar("Review added!",R.color.holoBlueDark).show();
                     Navigation.findNavController(view).navigate(R.id.navigateFromReviewToMap);
-                    drawSnackbar("Data upload failure, try later!",R.color.md_red_500).show();
+                    drawSnackbar("Review uploaded!",R.color.md_green_500).show();
 
 
                 } else {
@@ -217,6 +218,43 @@ public class ReviewFragment extends Fragment {
         return root;
     }
     //GET USER FROM DB
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if(mAuth.getCurrentUser()==null){
+            drawSnackbar("You have to login before",R.color.md_red_500).show();
+            Navigation.findNavController(view).navigate(R.id.navigateFromReviewToLogin);
+        }else {
+
+        }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // checking request code and result code
+        // if request code is PICK_IMAGE_REQUEST and
+        // resultCode is RESULT_OK
+        // then set image in the image view
+        if (requestCode == REQUEST_IMAGE_CAPTURE
+                && resultCode == RESULT_OK) {
+
+            Bundle extras = data.getExtras();
+            // Get the Uri of data
+            imageBitmap = (Bitmap) extras.get("data");
+            //ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            //imageBitmap.compress(Bitmap.CompressFormat.JPEG,,bytes);
+            filePath = Uri.parse(MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), imageBitmap,"Title",null));
+            imageButtonCamera.setImageBitmap(imageBitmap);
+
+        }else{
+            Snackbar.make(getView(), "problemi!", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).setBackgroundTint(getActivity().getResources().getColor(R.color.md_red_500)).show();
+        }
+    }
+
     public void getUserFromDB(){
 
         uuidUser = user.getUid();
@@ -281,15 +319,7 @@ public class ReviewFragment extends Fragment {
     private void uploadImage() {
         if (filePath != null) {
 
-            // Code for showing progressDialog while uploading
-            final ProgressDialog progressDialog
-                    = new ProgressDialog(getActivity());
-            progressDialog.setTitle("Uploading...");
-            progressDialog.show();
-
-            // Defining the child of storageReference
-            StorageReference ref
-                    = storageReference.child("images/" + uuidImage);
+            StorageReference ref = storageReference.child("images/" + uuidImage);
 
             // adding listeners on upload
             // or failure of image
@@ -299,9 +329,7 @@ public class ReviewFragment extends Fragment {
 
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    Snackbar.make(getView(), "Image uploaded!", Snackbar.LENGTH_LONG)
-                                            .setAction("Action", null).setBackgroundTint(getActivity().getResources().getColor(R.color.md_green_500)).show();
-                                    progressDialog.dismiss();
+
                                 }
                             })
 
@@ -310,18 +338,7 @@ public class ReviewFragment extends Fragment {
                         public void onFailure(@NonNull Exception e) {
                             //TODO
                         }
-                    })
-                    .addOnProgressListener(
-                            new OnProgressListener<UploadTask.TaskSnapshot>() {
-
-                                // Progress Listener for loading
-                                // percentage on the dialog box
-                                @Override
-                                public void onProgress(
-                                        UploadTask.TaskSnapshot taskSnapshot) {
-                                    //TODO
-                                }
-                            });
+                    });
         }
     }
     //SEND REVIEW TO DATABASE
@@ -353,29 +370,7 @@ public class ReviewFragment extends Fragment {
         return snackbar;
     }
     //ON ACTIVITY RESULT FROM CAMERA
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-            // checking request code and result code
-            // if request code is PICK_IMAGE_REQUEST and
-            // resultCode is RESULT_OK
-            // then set image in the image view
-            if (requestCode == REQUEST_IMAGE_CAPTURE
-                    && resultCode == RESULT_OK) {
-
-                Bundle extras = data.getExtras();
-                // Get the Uri of data
-                imageBitmap = (Bitmap) extras.get("data");
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                imageBitmap.compress(Bitmap.CompressFormat.JPEG,100,bytes);
-                filePath = Uri.parse(MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), imageBitmap,"Title",null));
-                imageButtonCamera.setImageBitmap(imageBitmap);
-
-            }else{
-                Snackbar.make(getView(), "problemi!", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).setBackgroundTint(getActivity().getResources().getColor(R.color.md_red_500)).show();
-            }
-        }
 
 
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BestWave</string>
+    <string name="menu_maps">Mappe</string>
+    <string name="menu_profile">Profilo</string>
+    <string name="hello_sign_in_to_your_account">Ciao, accedi al tuo account</string>
+    <string name="text_forgot_password">Hai dimenticato la password?</string>
+    <string name="text_signin_signup">Registrati ora</string>
+    <string name="text_signup_message">Ciao! Registrati ora</string>
+    <string name="hint_confirm_password">Conferma password</string>
+    <string name="already_registered_log_in">Sei già registrato? Accedi al tuo account</string>
+    <string name="hint_name">Nome</string>
+    <string name="location_permission_denied">Abilitare la localizzazione per usare questa app.</string>
+    <string name="write_a_description">Lascia un commento...</string>
+    <string name="send_review">Invia review</string>
+    <string name="search">Cerca...</string>
+    <string name="hint_surname">Cognome</string>
+    <string name="check_the_fields">Controlla i campi!</string>
+    <string name="field_cannot_be_empty">Il campo non può essere vuoto</string>
+    <string name="wrong_email_format">Formato email non corretto</string>
+    <string name="password_must_be_longer">La password deve essere più lunga di 8 caratteri</string>
+    <string name="welcome">Benvenuto!</string>
+    <string name="fail_to_login">Login non riuscito, prova più tardi</string>
+    <string name="doesnt_respect_format">Alcuni campi non rispettano il formato</string>
+    <string name="user_added">Utente aggiunto. Benvenuto!</string>
+    <string name="signup_fail">Registrazione non riuscita, riprova più tardi</string>
+    <string name="name_longer">Il nome deve essere più lungo di 2 caratteri</string>
+    <string name="surname_longer">Il cognome deve essere più lungo di due caratteri</string>
+    <string name="username_longer">L\'username deve essere più lungo di due caratteri</string>
+    <string name="second_password_correspond">Le password non coincidono</string>
+    <string name="you_have_to_login">Prima devi eseguire il login</string>
+    <string name="review_added">review aggiunta!</string>
+    <string name="review_uploaded">review caricata!</string>
+    <string name="insert_review">Inserisci la tua review</string>
+    <string name="location">La tua posizione</string>
+    <string name="take_picture">Scatta una foto</string>
+    <string name="write_description">Scrivi una descrizione</string>
+</resources>

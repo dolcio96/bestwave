@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BestWave</string>
+    <string name="menu_maps">Mapas</string>
+    <string name="menu_profile">Perfil</string>
+    <string name="hello_sign_in_to_your_account">Olá</string>
+    <string name="text_forgot_password">Esqueceu sua senha?</string>
+    <string name="text_signin_signup">Cadastre-se agora</string>
+    <string name="text_signup_message">Olá! Cadastre-se agora</string>
+    <string name="hint_confirm_password">Confirmar senha</string>
+    <string name="already_registered_log_in">Já está registado? Acesse sua conta</string>
+    <string name="hint_surname">Sobrenome</string>
+    <string name="hint_name">Nome</string>
+    <string name="location_permission_denied">Ative a localização para usar este aplicativo.</string>
+    <string name="write_a_description">Deixe um comentário</string>
+    <string name="send_review">Envia review</string>
+    <string name="search">Busca...</string>
+    <string name="check_the_fields">Verifique os campos</string>
+    <string name="field_cannot_be_empty">O campo não pode estar vazio</string>
+    <string name="wrong_email_format">Formato de e-mail incorreto</string>
+    <string name="password_must_be_longer">A senha deve ter mais de 8 caracteres</string>
+    <string name="welcome">bem-vindo!</string>
+    <string name="fail_to_login">A autenticação falhou, tente mais tarde</string>
+    <string name="doesnt_respect_format">Alguns campos não correspondem ao formato</string>
+    <string name="user_added">usuário adicionado. Bem-vindo!</string>
+    <string name="signup_fail">A inscrição falhou. Por favor, tente de novo mais tarde</string>
+    <string name="name_longer">O nome deve ter mais de 2 caracteres</string>
+    <string name="surname_longer">O sobrenome deve ter mais de dois caracteres</string>
+    <string name="username_longer">O username deve ter mais de dois caracteres</string>
+    <string name="second_password_correspond">As senhas não combinam</string>
+    <string name="you_have_to_login">Primeiro você tem que login</string>
+    <string name="review_added">Review adicionada</string>
+    <string name="review_uploaded">Review carregada</string>
+    <string name="insert_review">Insira a sua review</string>
+    <string name="location">Sua localização</string>
+    <string name="take_picture">Sirar uma foto</string>
+    <string name="write_description">Escreva uma descrição</string>
+</resources>

@@ -1,9 +1,7 @@
 package pt.ua.cm.bestwave.ui.authentication;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,8 +9,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 
 import android.provider.MediaStore;
@@ -32,27 +28,18 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.UUID;
-import java.util.concurrent.Executor;
 
-import pt.ua.cm.bestwave.MainActivity;
 import pt.ua.cm.bestwave.R;
 
 import static android.app.Activity.RESULT_OK;
@@ -146,7 +133,7 @@ public class RegisterFragment extends Fragment {
                     createUser();
 
                 } else {
-                    drawSnackbar("Some fields doesn't respect the format", R.color.md_red_500).show();
+                    drawSnackbar(getString(R.string.doesnt_respect_format), R.color.md_red_500).show();
                 }
             }
         });
@@ -161,12 +148,12 @@ public class RegisterFragment extends Fragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             //REGISTER SUCCESS
-                            drawSnackbar("User added. Welcome " + name, R.color.md_green_500).show();
+                            drawSnackbar(getString(R.string.user_added) + name, R.color.md_green_500).show();
                             //ADD USER TO DATABASE
                             addUserToDB();
 
                         } else {
-                            drawSnackbar("Sign in Fail, try again later", R.color.md_red_500).show();
+                            drawSnackbar(getString(R.string.signup_fail), R.color.md_red_500).show();
                         }
                     }
 
@@ -220,11 +207,11 @@ public class RegisterFragment extends Fragment {
 
     private boolean isValidEmail() {
         if (TextUtils.isEmpty(email)) {
-            regEmail.setError("Field cannot be empty!");
+            regEmail.setError(getString(R.string.field_cannot_be_empty));
             return false;
         }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            regEmail.setError("Wrong email format!");
+            regEmail.setError(getString(R.string.wrong_email_format));
             return false;
         }
         regEmail.setError(null);
@@ -234,11 +221,11 @@ public class RegisterFragment extends Fragment {
     private boolean isValidPassword() {
         String noWhiteSpace = "\\A\\w{4,20}\\z";
         if (password.isEmpty()) {
-            regPassword.setError("Field cannot be empty!");
+            regPassword.setError(getString(R.string.field_cannot_be_empty));
             return false;
         }
         if (password.length() < 8) {
-            regPassword.setError("Password must be longer than 8 charachters!");
+            regPassword.setError(getString(R.string.password_must_be_longer));
             return false;
         } else {
             regPassword.setError(null);
@@ -248,11 +235,11 @@ public class RegisterFragment extends Fragment {
 
     private boolean isValidName() {
         if (TextUtils.isEmpty(name)) {
-            regName.setError("Field cannot be empty!");
+            regName.setError(getString(R.string.field_cannot_be_empty));
             return false;
         }
         if (name.length() < 2) {
-            regName.setError("Name has to be longer than 2 characters");
+            regName.setError(getString(R.string.name_longer));
             return false;
         }
         else {
@@ -263,11 +250,11 @@ public class RegisterFragment extends Fragment {
 
     private boolean isValidSurname() {
         if (TextUtils.isEmpty(surname)) {
-            regSurname.setError("Field cannot be empty!");
+            regSurname.setError(getString(R.string.field_cannot_be_empty));
             return false;
         }
         if (surname.length() < 2) {
-            regSurname.setError("Surname has to be longer than 2 characters");
+            regSurname.setError(getString(R.string.surname_longer));
             return false;
         }
         else {
@@ -278,11 +265,11 @@ public class RegisterFragment extends Fragment {
 
     private boolean isValidUsername() {
         if (TextUtils.isEmpty(username)) {
-            regUsername.setError("Field cannot be empty!");
+            regUsername.setError(getString(R.string.field_cannot_be_empty));
             return false;
         }
         if (username.length() < 2) {
-            regUsername.setError("Username has to be longer than 2 characters");
+            regUsername.setError(getString(R.string.username_longer));
             return false;
         }
         else {
@@ -293,7 +280,7 @@ public class RegisterFragment extends Fragment {
 
     private boolean isValidSecondPassword(){
         if (TextUtils.isEmpty(confirmPassword)) {
-            regConfirmPassword.setError("Field cannot be empty!");
+            regConfirmPassword.setError(getString(R.string.field_cannot_be_empty));
             return false;
         }
         if (confirmPassword.equals(password)) {
@@ -301,7 +288,7 @@ public class RegisterFragment extends Fragment {
             return true;
         }
         else {
-            regConfirmPassword.setError("The second password must correspond to the first");
+            regConfirmPassword.setError(getString(R.string.second_password_correspond));
             return false;
         }
 

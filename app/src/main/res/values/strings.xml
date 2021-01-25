@@ -1,38 +1,61 @@
 <resources>
     <string name="app_name">BestWave</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="nav_header_title" translatable="false">Android Studio</string>
+    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
+    <string name="nav_header_desc" translatable="false">Navigation header</string>
+    <string name="action_settings" translatable="false">Settings</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_home" translatable="false">Home</string>
+    <string name="menu_gallery" translatable="false">Gallery</string>
+    <string name="menu_slideshow" translatable="false">Slideshow</string>
     <string name="menu_maps">Maps</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="menu_login">Login</string>
-    <string name="menu_register">Signup</string>
-    <string name="menu_review">Review</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="menu_login" translatable="false">Login</string>
+    <string name="menu_register" translatable="false">Signup</string>
+    <string name="menu_review" translatable="false">Review</string>
     <string name="menu_profile">Profile</string>
     <string name="hello_sign_in_to_your_account">Hello, Sign in to your account</string>
-    <string name="hint_e_mail">e-mail</string>
-    <string name="hit_password">password</string>
+    <string name="hint_e_mail" translatable="false">e-mail</string>
+    <string name="hit_password" translatable="false">password</string>
     <string name="text_forgot_password">Forgot the password?</string>
-    <string name="button_sign_in">Log In</string>
+    <string name="button_sign_in" translatable="false">Log In</string>
     <string name="text_signin_signup">Register Now!</string>
     <string name="text_signup_message">Hello! Register now</string>
-    <string name="hint_email">Email</string>
-    <string name="hint_username">Username</string>
-    <string name="hint_password">Password</string>
+    <string name="hint_email" translatable="false">Email</string>
+    <string name="hint_username" translatable="false">Username</string>
+    <string name="hint_password" translatable="false">Password</string>
     <string name="hint_confirm_password">Confirm Password</string>
-    <string name="button_sign_up">Signup</string>
+    <string name="button_sign_up" translatable="false">Signup</string>
     <string name="already_registered_log_in">Already registered? Log in!</string>
     <string name="hint_surname">Surname</string>
     <string name="hint_name">Name</string>
-    <string name="location_text">"Latitude: %1$.4f \n Longitude: %2$.4f \n Timestamp: %3$tr"</string>
     <string name="location_permission_denied">Location permissions denied, please enable the permissions to use this app.</string>
-    <string name="menu_logout">Logout</string>
+    <string name="menu_logout" translatable="false">Logout</string>
+    <string name="write_a_description">Write a description..</string>
+    <string name="send_review">Send Review</string>
+    <string name="search">Search...</string>
+    <string name="check_the_fields">Check the fields</string>
+    <string name="field_cannot_be_empty">Field cannot be empty!</string>
+    <string name="wrong_email_format">Wrong email format!</string>
+    <string name="password_must_be_longer">Password must be longer than 8 charachters!</string>
+    <string name="welcome">Welcome!</string>
+    <string name="fail_to_login">Fail to login, try later</string>
+    <string name="doesnt_respect_format">Some fields doesn\'t respect the format</string>
+    <string name="user_added">\"User added. Welcome \"</string>
+    <string name="signup_fail">Sign up Fail, try again later</string>
+    <string name="name_longer">Name has to be longer than 2 characters</string>
+    <string name="surname_longer">Surname has to be longer than 2 characters</string>
+    <string name="username_longer">Username has to be longer than 2 characters</string>
+    <string name="second_password_correspond">The second password must correspond to the first</string>
+    <string name="you_have_to_login">You have to login before</string>
+    <string name="review_added">Review added!</string>
+    <string name="review_uploaded">Review uploaded!</string>
+    <string name="insert_review">Insert your review</string>
+    <string name="location">Location</string>
+    <string name="rating_bar" translatable="false">Rating Bar</string>
+    <string name="take_picture">Take a Picture</string>
+    <string name="write_description">Write a Description</string>
 </resources>

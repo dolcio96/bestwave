@@ -7,7 +7,7 @@
     tools:context=".ui.review.ReviewFragment">
 
     <TextView
-        android:id="@+id/inserReviewTextView"
+        android:id="@+id/insertReviewTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/location_container"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/inserReviewTextView"
+        app:layout_constraintTop_toBottomOf="@id/insertReviewTextView"
         app:layout_constraintBottom_toTopOf="@id/ratingBarTextView"
         >
 

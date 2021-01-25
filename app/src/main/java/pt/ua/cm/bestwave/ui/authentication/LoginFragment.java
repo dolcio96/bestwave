@@ -87,7 +87,7 @@ public class LoginFragment extends Fragment {
             logInUserValidate();
         }
         else{
-            drawSnackbar("Check the fields",R.color.md_red_500).show();
+            drawSnackbar(getString(R.string.check_the_fields),R.color.md_red_500).show();
         }
 
 
@@ -96,11 +96,11 @@ public class LoginFragment extends Fragment {
     public boolean isValidEmail() {
         String email = regEmail.getText().toString();
         if (TextUtils.isEmpty(email)){
-            regEmail.setError("Field cannot be empty!");
+            regEmail.setError(getString(R.string.field_cannot_be_empty));
             return false;
         }
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            regEmail.setError("Wrong email format!");
+            regEmail.setError(getString(R.string.wrong_email_format));
             return false;
         }
         regEmail.setError(null);
@@ -109,13 +109,12 @@ public class LoginFragment extends Fragment {
 
     private Boolean isValidPassword(){
         String pass = regPassword.getText().toString();
-        String noWhiteSpace = "\\A\\w{4,20}\\z";
         if (pass.isEmpty()){
-            regPassword.setError("Field cannot be empty!");
+            regPassword.setError(getString(R.string.field_cannot_be_empty));
             return false;
         }
         if(pass.length()<8){
-            regPassword.setError("Password must be longer than 8 charachters!");
+            regPassword.setError(getString(R.string.password_must_be_longer));
             return false;
         }
         else{
@@ -133,12 +132,12 @@ public class LoginFragment extends Fragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's informations
-                            drawSnackbar("Welcome " + email + " !",R.color.md_green_500).show();
+                            drawSnackbar(getString(R.string.welcome) + email + " !",R.color.md_green_500).show();
                             FirebaseUser user = mAuth.getCurrentUser();
                             //NAVIGATE TO HOME (MAP)
                             Navigation.findNavController(getView()).navigate(R.id.navigateFromLoginToMap);
                         } else {
-                            drawSnackbar("Fail to login, try later",R.color.md_red_500).show();
+                            drawSnackbar(getString(R.string.fail_to_login),R.color.md_red_500).show();
                         }
                     }
                 });

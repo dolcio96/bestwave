@@ -67,18 +67,15 @@ import static android.app.Activity.RESULT_OK;
 
 public class ReviewFragment extends Fragment {
     // request code
-    private static final int REQUEST_LOCATION_PERMISSION = 1;
-    private final int PICK_IMAGE_REQUEST = 22;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     //VIEW VARIABLE
-    private ReviewViewModel galleryViewModel;
     ImageButton imageButtonCamera;
     RatingBar ratingBar = null;
-    Float ratingValue = 0.0f;
+    Float ratingValue;
     Bitmap imageBitmap = null;
     Button sendReviewButton;
-    EditText descriptionEditText = null;
-    TextView locationTextView;
+    EditText descriptionEditText;
+    TextView locationTextView,insertReviewTextView,ratingBarTextView,takeAPictureTextView,writeDescriptionTextView;
 
     //MAP VARIABLE
     private FusedLocationProviderClient mFusedLocationClient;
@@ -124,55 +121,26 @@ public class ReviewFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        galleryViewModel =
-                ViewModelProviders.of(this).get(ReviewViewModel.class);
+
         View root = inflater.inflate(R.layout.fragment_review, container, false);
 
-        final TextView textViewInsertReview = root.findViewById(R.id.locationTextView);
-        galleryViewModel.getTextInsertReview().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textViewInsertReview.setText(s);
-            }
-        });
-
-        final TextView textViewLocation = root.findViewById(R.id.inserReviewTextView);
-        galleryViewModel.getTextLocation().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textViewLocation.setText(s);
-            }
-        });
-
-        final TextView textViewRatingBar = root.findViewById(R.id.ratingBarTextView);
-        galleryViewModel.getTextRatingBar().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                textViewRatingBar.setText(s);
-            }
-        });
-        final TextView textViewTakeAPicture = root.findViewById(R.id.takeAPictureTextView);
-        galleryViewModel.getTextTakeAPicture().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                textViewTakeAPicture.setText(s);
-            }
-        });
-
-        final TextView textViewWriteDescription = root.findViewById(R.id.writeDescriptionTextView);
-        galleryViewModel.getTextWriteDescription().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                textViewWriteDescription.setText(s);
-            }
-        });
-
         // SET VIEW VARIABLE
+        insertReviewTextView = root.findViewById(R.id.insertReviewTextView);
+        ratingBarTextView = root.findViewById(R.id.ratingBarTextView);
+        takeAPictureTextView = root.findViewById(R.id.takeAPictureTextView);
+        writeDescriptionTextView = root.findViewById(R.id.writeDescriptionTextView);
         locationTextView = root.findViewById(R.id.locationTextView);
         ratingBar = root.findViewById(R.id.ratingBar);
         imageButtonCamera = root.findViewById(R.id.imageButtonCamera);
         descriptionEditText = root.findViewById(R.id.editTextWriteDescription);
         sendReviewButton = (Button) root.findViewById(R.id.buttonSendReview);
+
+        // SET TEXT
+        insertReviewTextView.setText(R.string.insert_review);
+        ratingBarTextView.setText(R.string.location);
+        takeAPictureTextView.setText(R.string.rating_bar);
+        takeAPictureTextView.setText(R.string.take_picture);
+        writeDescriptionTextView.setText(R.string.write_description);
 
         //LISTENERS
         ratingBar.setOnClickListener(new View.OnClickListener() {
@@ -197,19 +165,18 @@ public class ReviewFragment extends Fragment {
         sendReviewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO move this check into onCreate (aggiungere TextView  che conterrà la posizione scritta in città)
                 //check permission
                 if (checkFields()) {
                     uuidImage = UUID.randomUUID().toString();
                     uploadImage();
                     sendDataToDatabase();
-                    drawSnackbar("Review added!",R.color.holoBlueDark).show();
+                    drawSnackbar(getString(R.string.review_added),R.color.holoBlueDark).show();
                     Navigation.findNavController(view).navigate(R.id.navigateFromReviewToMap);
-                    drawSnackbar("Review uploaded!",R.color.md_green_500).show();
+                    drawSnackbar(getString(R.string.review_uploaded),R.color.md_green_500).show();
 
 
                 } else {
-                    drawSnackbar("Some fields are empty!",R.color.md_red_500).show();
+                    drawSnackbar(getString(R.string.field_cannot_be_empty),R.color.md_red_500).show();
                 }
             }
 
@@ -225,7 +192,7 @@ public class ReviewFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         if(mAuth.getCurrentUser()==null){
-            drawSnackbar("You have to login before",R.color.md_red_500).show();
+            drawSnackbar(getString(R.string.you_have_to_login),R.color.md_red_500).show();
             Navigation.findNavController(view).navigate(R.id.navigateFromReviewToLogin);
         }else {
 
@@ -249,9 +216,6 @@ public class ReviewFragment extends Fragment {
             filePath = Uri.parse(MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), imageBitmap,"Title",null));
             imageButtonCamera.setImageBitmap(imageBitmap);
 
-        }else{
-            Snackbar.make(getView(), "problemi!", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).setBackgroundTint(getActivity().getResources().getColor(R.color.md_red_500)).show();
         }
     }
 
@@ -263,10 +227,8 @@ public class ReviewFragment extends Fragment {
         referenceUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.d("LOG13",snapshot.getValue().toString());
                 UserHelperClass uhc = snapshot.getValue(UserHelperClass.class);
                 username=uhc.getUsername();
-                Log.d("USER",username);
             }
 
             @Override
@@ -292,7 +254,6 @@ public class ReviewFragment extends Fragment {
                             List<Address> addresses = geocoder.getFromLocation(
                                     location.getLatitude(), location.getLongitude(), 1
                             );
-                            //TODO editText.setText(Html.fromHtml("Address : " + addresses.get(0).getAddressLine(0)));
                             //Set longitude and latitude inside a variable
                             latLng = new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
                             String address = addresses.get(0).getAddressLine(0);

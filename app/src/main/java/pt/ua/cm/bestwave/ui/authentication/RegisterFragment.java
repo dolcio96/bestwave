@@ -1,19 +1,11 @@
 package pt.ua.cm.bestwave.ui.authentication;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +13,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -46,9 +43,8 @@ import static android.app.Activity.RESULT_OK;
 
 
 public class RegisterFragment extends Fragment {
-    private static final int RESULT_LOAD_IMAGE = 99 ;
-    //AUTHENTICATION
-    private FirebaseAuth mAuth;
+    private static final int RESULT_LOAD_IMAGE = 99;
+
 
     //DATABASE
     FirebaseDatabase database;
@@ -56,14 +52,16 @@ public class RegisterFragment extends Fragment {
     //FIREBASE STORAGE
     FirebaseStorage storage;
     StorageReference storageReference;
+    //AUTHENTICATION
+    private FirebaseAuth mAuth;
 
     NavigationView navigationView;
     EditText regEmail, regUsername, regName, regSurname;
     EditText regPassword, regConfirmPassword;
-    Button btnRegister, btnback;
-    String email, password, name, surname, username,confirmPassword;
+    Button btnRegister, btnBack;
+    String email, password, name, surname, username, confirmPassword;
     ImageView btnImage;
-    Bitmap imageBitmap =null;
+    Bitmap imageBitmap = null;
     Uri filePath;
     View view;
     FirebaseUser user;
@@ -74,22 +72,16 @@ public class RegisterFragment extends Fragment {
         //GET FIREBASE INSTANCE
         storage = FirebaseStorage.getInstance();
         mAuth = FirebaseAuth.getInstance();
-
-        //FirebaseAuth.getInstance().signOut();
-
+        database = FirebaseDatabase.getInstance();
     }
 
-    @SuppressLint("WrongViewCast")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-        navigationView = getActivity().findViewById(R.id.nav_view);
-        navigationView.getMenu().getItem(3).setTitle("Login");
-
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_register, container, false);
+        //GET VIEWS
         regUsername = view.findViewById(R.id.et_username);
         regEmail = view.findViewById(R.id.et_email);
         regName = view.findViewById(R.id.et_name);
@@ -97,8 +89,9 @@ public class RegisterFragment extends Fragment {
         regPassword = view.findViewById(R.id.et_password_register);
         regConfirmPassword = view.findViewById(R.id.et_confirm_password_register);
         btnRegister = view.findViewById(R.id.button_signup);
-        btnback = view.findViewById(R.id.button_goto_login);
+        btnBack = view.findViewById(R.id.button_goto_login);
         btnImage = view.findViewById(R.id.profile_image);
+        //SET ONCLICK LISTENERS
         btnImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,29 +100,24 @@ public class RegisterFragment extends Fragment {
                 startActivityForResult(intent, RESULT_LOAD_IMAGE);
             }
         });
-        btnback.setOnClickListener(new View.OnClickListener() {
+        btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Navigation.findNavController(v).navigate(R.id.navigateFromRegisterToLogin);
             }
         });
-
-
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //GET FORM FIELDS
                 username = regUsername.getText().toString();
                 email = regEmail.getText().toString();
                 name = regName.getText().toString();
                 surname = regSurname.getText().toString();
                 password = regPassword.getText().toString();
                 confirmPassword = regConfirmPassword.getText().toString();
-
-
-                //CREATE USER ON FIREBASE AUTHENTICATION
-                Log.d("URI",String.valueOf(filePath));
-
                 if (validateFields()) {
+                    //CREATE USER ON FIREBASE AUTHENTICATION
                     createUser();
 
                 } else {
@@ -162,15 +150,30 @@ public class RegisterFragment extends Fragment {
     }
 
     public void addUserToDB() {
-        database = FirebaseDatabase.getInstance();
         reference = database.getReference("users");
         user = mAuth.getCurrentUser();
         UserHelperClass userHelperClass = new UserHelperClass(username, email, name, surname, password);
         reference.child(user.getUid()).setValue(userHelperClass);
         //NAVIGATE TO HOME (MAP)
         Navigation.findNavController(view).navigate(R.id.navigateFromRegisterToMap);
-        if(filePath!=null){
+        if (filePath != null) {
+            //UPLOAD IMAGE ON STORAGE
             uploadImageOnStorage();
+        }
+    }
+
+    private void uploadImageOnStorage() {
+        if (filePath != null) {
+            storageReference = storage.getReference().child("profileImages/" + user.getUid());
+            storageReference.putFile(filePath)
+                    .addOnSuccessListener(
+                            new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                }
+                            });
         }
     }
 
@@ -182,7 +185,7 @@ public class RegisterFragment extends Fragment {
 
     private boolean validateFields() {
 
-        if(!isValidUsername()){
+        if (!isValidUsername()) {
             return false;
         }
         if (!isValidEmail()) {
@@ -197,10 +200,9 @@ public class RegisterFragment extends Fragment {
         if (!isValidPassword()) {
             return false;
         }
-        if(!isValidSecondPassword()){
+        if (!isValidSecondPassword()) {
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }
@@ -241,8 +243,7 @@ public class RegisterFragment extends Fragment {
         if (name.length() < 2) {
             regName.setError(getString(R.string.name_longer));
             return false;
-        }
-        else {
+        } else {
             regName.setError(null);
             return true;
         }
@@ -256,8 +257,7 @@ public class RegisterFragment extends Fragment {
         if (surname.length() < 2) {
             regSurname.setError(getString(R.string.surname_longer));
             return false;
-        }
-        else {
+        } else {
             regSurname.setError(null);
             return true;
         }
@@ -271,14 +271,13 @@ public class RegisterFragment extends Fragment {
         if (username.length() < 2) {
             regUsername.setError(getString(R.string.username_longer));
             return false;
-        }
-        else {
+        } else {
             regUsername.setError(null);
             return true;
         }
     }
 
-    private boolean isValidSecondPassword(){
+    private boolean isValidSecondPassword() {
         if (TextUtils.isEmpty(confirmPassword)) {
             regConfirmPassword.setError(getString(R.string.field_cannot_be_empty));
             return false;
@@ -286,47 +285,13 @@ public class RegisterFragment extends Fragment {
         if (confirmPassword.equals(password)) {
             regConfirmPassword.setError(null);
             return true;
-        }
-        else {
+        } else {
             regConfirmPassword.setError(getString(R.string.second_password_correspond));
             return false;
         }
 
     }
 
-    private void uploadImageOnStorage(){
-        if (filePath != null) {
-            storageReference = storage.getReference().child("profileImages/" + user.getUid());
-
-            storageReference.putFile(filePath)
-                    .addOnSuccessListener(
-                            new OnSuccessListener<UploadTask.TaskSnapshot>() {
-
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                                }
-                            })
-
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            //TODO
-                        }
-                    })
-                    .addOnProgressListener(
-                            new OnProgressListener<UploadTask.TaskSnapshot>() {
-
-                                // Progress Listener for loading
-                                // percentage on the dialog box
-                                @Override
-                                public void onProgress(
-                                        UploadTask.TaskSnapshot taskSnapshot) {
-                                    //TODO
-                                }
-                            });
-        }
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

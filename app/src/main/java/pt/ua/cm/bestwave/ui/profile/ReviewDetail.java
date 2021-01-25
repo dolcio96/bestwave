@@ -4,20 +4,16 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -31,21 +27,17 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-import pt.ua.cm.bestwave.MainActivity;
-import pt.ua.cm.bestwave.ProfileReviewFragmentArgs;
 import pt.ua.cm.bestwave.R;
 import pt.ua.cm.bestwave.ui.review.ReviewHelperClass;
 
 
 public class ReviewDetail extends Fragment {
     ReviewHelperClass rhc;
-    String tag;
-    ImageView reviewImage;
-    TextView locationText;
-    TextView dateText;
-    TextView descriptionText;
 
+    ImageView reviewImage;
+    TextView locationText,dateText,descriptionText;
     RatingBar ratingBar = null;
+    String tag;
 
     Geocoder geocoder;
     List<Address> addresses;
@@ -61,9 +53,8 @@ public class ReviewDetail extends Fragment {
         super.onCreate(savedInstanceState);
         ReviewDetailArgs arg = ReviewDetailArgs.fromBundle(getArguments());
         rhc = arg.getCurrentRhc();
-        tag =arg.getTag();
+        tag = arg.getTag();
         storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
     }
 
     @Override
@@ -105,13 +96,7 @@ public class ReviewDetail extends Fragment {
             e.printStackTrace();
         }
 
-        /*String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-        String state = addresses.get(0).getAdminArea();
-        String country = addresses.get(0).getCountryName();
-        String postalCode = addresses.get(0).getPostalCode();
-        String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL*/ //DATA METHODS
         String city = addresses.get(0).getLocality();
-
 
         locationText.setText((String) String.valueOf(city));
     }
@@ -122,21 +107,16 @@ public class ReviewDetail extends Fragment {
         getReviewImage();
     }
 
-    @Override
-    public void onDestroy() {
-
-        super.onDestroy();
-    }
-
 
     public void getReviewImage() {
+        storageReference = storage.getReference();
         storageReference.child("images/" + tag)
                 .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
 
-               Glide.with(view.getContext()).load(uri).centerCrop().into(reviewImage);
-               reviewImage.setAlpha((float) 1.0);
+                Glide.with(view.getContext()).load(uri).centerCrop().into(reviewImage);
+                reviewImage.setAlpha((float) 1.0);
 
             }
         }).addOnFailureListener(new OnFailureListener() {

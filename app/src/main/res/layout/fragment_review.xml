@@ -25,16 +25,14 @@
         android:id="@+id/location_container"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/insertReviewTextView"
-        app:layout_constraintBottom_toTopOf="@id/ratingBarTextView"
-        >
+        app:layout_constraintBottom_toTopOf="@id/ratingBarTextView">
 
         <ImageView
             android:id="@+id/locationlogo"
             android:layout_width="30dp"
             android:layout_height="match_parent"
             android:background="@color/transparent"
-            android:src="@drawable/ic_location_foreground"
-            />
+            android:src="@drawable/ic_location_foreground" />
 
         <TextView
             android:id="@+id/locationTextView"
@@ -44,10 +42,7 @@
             android:fontFamily="sans-serif-thin"
             android:text="Praia da Barra (Aveiro)"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textSize="21sp"
-            >
-        </TextView>
-
+            android:textSize="21sp"></TextView>
 
 
     </LinearLayout>

@@ -42,6 +42,7 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textAllCaps">false</item>
     </style>
+
     <style name="TextButtonSignIn_Login" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textAllCaps">false</item>
     </style>

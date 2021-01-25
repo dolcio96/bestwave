@@ -8,7 +8,6 @@
     android:orientation="vertical"
     android:background="@drawable/side_nav_bar">
 
-    <!-- TODO: Update blank fragment layout -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,14 +18,13 @@
         android:background="@drawable/side_nav_bar"
         android:padding="2dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/profile_image_image_view"
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:src="@drawable/user_register_pic"
             app:civ_border_width="4dp"
-            app:civ_border_color="@color/bluMedio"/>
+            app:civ_border_color="@color/bluMedio" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -57,8 +55,7 @@
             android:text="bestwave@gmail.com"
             android:textSize="15dp"
             android:id="@+id/email_profile_review_text_view"
-            android:textStyle="bold"/>
-
+            android:textStyle="bold" />
 
 
     </LinearLayout>
@@ -66,8 +63,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        >
+        android:background="@color/white">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="270dp"
@@ -82,8 +79,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/whiteBackground"
                 android:src="@drawable/logo"
-                android:alpha="0.2"
-                />
+                android:alpha="0.2" />
         </LinearLayout>
 
         <TextView
@@ -115,8 +111,7 @@
                 android:layout_width="30dp"
                 android:layout_height="match_parent"
                 android:background="@color/white"
-                android:src="@drawable/ic_location_foreground"
-                ></ImageView>
+                android:src="@drawable/ic_location_foreground"></ImageView>
 
             <TextView
                 android:id="@+id/profile_review_location"
@@ -125,10 +120,7 @@
                 android:fontFamily="sans-serif-thin"
                 android:text="Praia da Barra (Aveiro)"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textSize="21dp"
-                >
-            </TextView>
-
+                android:textSize="21dp"></TextView>
 
 
         </LinearLayout>
@@ -142,7 +134,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profile_review_date"
-            app:layout_constraintBottom_toTopOf="@+id/commentContainer"/>
+            app:layout_constraintBottom_toTopOf="@+id/commentContainer" />
 
 
         <ScrollView

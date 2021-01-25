@@ -3,18 +3,11 @@ package pt.ua.cm.bestwave.ui.maps;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import pt.ua.cm.bestwave.ui.review.ReviewHelperClass;
-
 public class HelperMap {
 
-    //Database Firebase variables
-    FirebaseDatabase database;
-    DatabaseReference reference;
+    double latitude, longitude;
 
-
-    double latitude,longitude;
-
-    public HelperMap(){
+    public HelperMap() {
 
     }
 

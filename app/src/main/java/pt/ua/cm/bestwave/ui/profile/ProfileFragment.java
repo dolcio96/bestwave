@@ -38,16 +38,14 @@ import pt.ua.cm.bestwave.ui.review.ReviewHelperClass;
 
 public class ProfileFragment extends Fragment {
 
-    private ProfileViewModel homeViewModel;
-    RecyclerView reviewRecyclerView;
     UserHelperClass uhc;
     HelperAdapterProfile helperAdapterProfile;
-    ReviewHelperClass rhc = null;
-    String uuidUser;
 
+    RecyclerView reviewRecyclerView;
     ImageView imageProfileView;
     TextView nameSurnameTextView;
     TextView emailTextView;
+    HashMap<String, ReviewHelperClass> reviewMap = new HashMap<String, ReviewHelperClass>();
 
     //FIREBASE STORAGE
     FirebaseStorage storage;
@@ -57,44 +55,39 @@ public class ProfileFragment extends Fragment {
     DatabaseReference reference;
     //FIREBASE AUTHENTICATION
     FirebaseAuth mAuth;
-    FirebaseUser user;
-    HashMap<String, ReviewHelperClass> reviewMap = new HashMap<String, ReviewHelperClass>();
+
+
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
-        // get the Firebase  storage reference
-        storageReference = storage.getReference();
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (user != null) {
+        if (mAuth.getCurrentUser() != null) {
             getUserFromDB();
-
         }
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                ViewModelProviders.of(this).get(ProfileViewModel.class);
+
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         //GET VIEW PROFILE COMPONENTS
         imageProfileView = view.findViewById(R.id.profile_image_image_view);
         nameSurnameTextView = view.findViewById(R.id.name_surname_profile_text_view);
         emailTextView = view.findViewById(R.id.email_profile_text_view);
+        //SET LAYOUT MANAGER FOR RECYCLERVIEW
         reviewRecyclerView = view.findViewById(R.id.recyclerviewItem);
         reviewRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-
         return view;
     }
 
@@ -114,8 +107,8 @@ public class ProfileFragment extends Fragment {
     //GET USER FROM DB
     public void getUserFromDB() {
 
-        uuidUser = user.getUid();
-        reference = database.getReference("users").child(uuidUser);
+
+        reference = database.getReference("users").child(mAuth.getCurrentUser().getUid());
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -135,7 +128,8 @@ public class ProfileFragment extends Fragment {
     }
 
     public void getUserImage() {
-        storageReference.child("profileImages/" + user.getUid())
+        storageReference = storage.getReference();
+        storageReference.child("profileImages/" + mAuth.getCurrentUser().getUid())
                 .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -158,7 +152,7 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     ReviewHelperClass rhc = ds.getValue(ReviewHelperClass.class);
-                    if (uuidUser.equals(rhc.getUuidUser())) {
+                    if (mAuth.getCurrentUser().getUid().equals(rhc.getUuidUser())) {
                         reviewMap.put(ds.getKey(), rhc);
                     }
                 }

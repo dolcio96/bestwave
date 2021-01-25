@@ -1,16 +1,9 @@
 package pt.ua.cm.bestwave;
 
-import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +11,13 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.ViewTarget;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,9 +42,9 @@ public class ProfileReviewFragment extends Fragment {
     UserHelperClass uhc;
     String uuidUser;
     String tag;
-    TextView nameSurnameTextView,emailTextView,locationText,dateText,descriptionText;
+    TextView nameSurnameTextView, emailTextView, locationText, dateText, descriptionText;
     RatingBar ratingBar = null;
-    ImageView profileImage,reviewImage;
+    ImageView profileImage, reviewImage;
 
     Geocoder geocoder;
     List<Address> addresses;
@@ -83,14 +77,14 @@ public class ProfileReviewFragment extends Fragment {
 
 
         // FIND VIEWS
-        reviewImage =view.findViewById(R.id.imageReview);
-        profileImage=view.findViewById(R.id.profile_image_image_view);
-        nameSurnameTextView=view.findViewById(R.id.name_surname_profile_review_text_view);
-        emailTextView=view.findViewById(R.id.email_profile_review_text_view);
-        locationText=view.findViewById(R.id.profile_review_location);
-        dateText=view.findViewById(R.id.profile_review_date);
-        descriptionText=view.findViewById(R.id.profile_review_description);
-        ratingBar=view.findViewById(R.id.profile_review_ratingBar);
+        reviewImage = view.findViewById(R.id.imageReview);
+        profileImage = view.findViewById(R.id.profile_image_image_view);
+        nameSurnameTextView = view.findViewById(R.id.name_surname_profile_review_text_view);
+        emailTextView = view.findViewById(R.id.email_profile_review_text_view);
+        locationText = view.findViewById(R.id.profile_review_location);
+        dateText = view.findViewById(R.id.profile_review_date);
+        descriptionText = view.findViewById(R.id.profile_review_description);
+        ratingBar = view.findViewById(R.id.profile_review_ratingBar);
 
         return view;
     }
@@ -98,7 +92,7 @@ public class ProfileReviewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(getArguments()!=null){
+        if (getArguments() != null) {
             ProfileReviewFragmentArgs arg = ProfileReviewFragmentArgs.fromBundle(getArguments());
             tag = arg.getCurrentTag();
             getReviewsFromDB();
@@ -107,7 +101,7 @@ public class ProfileReviewFragment extends Fragment {
 
     }
 
-    public void getReviewsFromDB(){
+    public void getReviewsFromDB() {
         reference = database.getReference("reviews").child(tag);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -137,14 +131,14 @@ public class ProfileReviewFragment extends Fragment {
     }
 
     //GET USER FROM DB
-    public void getUserFromDB(){
+    public void getUserFromDB() {
         uuidUser = rhc.getUuidUser();
         reference = database.getReference("users").child(uuidUser);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 uhc = snapshot.getValue(UserHelperClass.class);
-                nameSurnameTextView.setText(uhc.getName().toUpperCase()+" "+uhc.getSurname().toUpperCase());
+                nameSurnameTextView.setText(uhc.getName().toUpperCase() + " " + uhc.getSurname().toUpperCase());
                 emailTextView.setText((uhc.getEmail()));
 
                 getProfileImage();
@@ -158,7 +152,7 @@ public class ProfileReviewFragment extends Fragment {
     }
 
     // GET COMPLETE ADDRESS FROM LATITUDE AND LONGITUDE
-    public void getCompleteAddress(){
+    public void getCompleteAddress() {
 
         geocoder = new Geocoder(getActivity(), Locale.getDefault());
         try {
@@ -177,13 +171,13 @@ public class ProfileReviewFragment extends Fragment {
         locationText.setText((String) String.valueOf(city));
     }
 
-    public void getProfileImage(){
-        storageReference.child("profileImages/"+rhc.getUuidUser())
+    public void getProfileImage() {
+        storageReference.child("profileImages/" + rhc.getUuidUser())
                 .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
 
-                    Glide.with(view.getContext()).load(uri).centerCrop().into(profileImage);
+                Glide.with(view.getContext()).load(uri).centerCrop().into(profileImage);
 
 
             }
@@ -197,14 +191,14 @@ public class ProfileReviewFragment extends Fragment {
 
     }
 
-    public void getReviewImage(){
-        storageReference.child("images/"+tag)
+    public void getReviewImage() {
+        storageReference.child("images/" + tag)
                 .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
 
-                    Glide.with(view.getContext()).load(uri).centerCrop().into(reviewImage);
-                    reviewImage.setAlpha((float) 1.0);
+                Glide.with(view.getContext()).load(uri).centerCrop().into(reviewImage);
+                reviewImage.setAlpha((float) 1.0);
 
             }
         }).addOnFailureListener(new OnFailureListener() {

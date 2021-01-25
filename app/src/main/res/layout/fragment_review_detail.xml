@@ -23,8 +23,7 @@
             android:layout_height="match_parent"
             android:background="@color/whiteBackground"
             android:src="@drawable/logo"
-            android:alpha="0.2"
-            />
+            android:alpha="0.2" />
     </LinearLayout>
 
     <TextView
@@ -55,8 +54,7 @@
             android:layout_width="30dp"
             android:layout_height="match_parent"
             android:background="@color/white"
-            android:src="@drawable/ic_location_foreground"
-            />
+            android:src="@drawable/ic_location_foreground" />
 
         <TextView
             android:id="@+id/locationReview"
@@ -67,9 +65,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textSize="21dp"
 
-            >
-        </TextView>
-
+            ></TextView>
 
 
     </LinearLayout>
@@ -83,7 +79,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dateReview"
-        app:layout_constraintBottom_toTopOf="@+id/commentContainer"/>
+        app:layout_constraintBottom_toTopOf="@+id/commentContainer" />
 
 
     <ScrollView

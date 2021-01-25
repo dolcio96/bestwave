@@ -16,8 +16,7 @@
         android:gravity="center"
         android:orientation="vertical"
         android:fillViewport="true"
-        android:fitsSystemWindows="true"
-        >
+        android:fitsSystemWindows="true">
 
         <ImageView
             android:layout_width="match_parent"

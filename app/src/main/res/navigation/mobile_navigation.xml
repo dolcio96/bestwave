@@ -9,7 +9,7 @@
         android:id="@+id/nav_maps"
         android:name="pt.ua.cm.bestwave.ui.maps.MapsFragment"
         android:label="@string/menu_maps"
-        tools:layout="@layout/fragment_maps" >
+        tools:layout="@layout/fragment_maps">
         <action
             android:id="@+id/navigateFromMapToProfileReview"
             app:destination="@id/nav_profile_review" />
@@ -18,7 +18,7 @@
         android:id="@+id/nav_profile"
         android:name="pt.ua.cm.bestwave.ui.profile.ProfileFragment"
         android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_profile" >
+        tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/navigateFromProfileToReviewDetail"
             app:destination="@id/nav_review_detail" />
@@ -30,7 +30,7 @@
         android:id="@+id/nav_review"
         android:name="pt.ua.cm.bestwave.ui.review.ReviewFragment"
         android:label="@string/menu_review"
-        tools:layout="@layout/fragment_review" >
+        tools:layout="@layout/fragment_review">
         <action
             android:id="@+id/navigateFromReviewToMap"
             app:destination="@id/nav_maps" />
@@ -55,7 +55,7 @@
         android:id="@+id/nav_login"
         android:name="pt.ua.cm.bestwave.ui.authentication.LoginFragment"
         android:label="@string/menu_login"
-        tools:layout="@layout/fragment_login" >
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/navigateFromLoginToRegister"
             app:destination="@id/nav_register" />
@@ -66,8 +66,7 @@
     <fragment
         android:id="@+id/nav_logout"
         android:name="pt.ua.cm.bestwave.ui.authentication.LoginFragment"
-        android:label="@string/menu_logout"
-        >
+        android:label="@string/menu_logout">
         <action
             android:id="@+id/navigateFromLogoutToMap"
             app:destination="@id/nav_maps" />
@@ -76,7 +75,7 @@
         android:id="@+id/nav_register"
         android:name="pt.ua.cm.bestwave.ui.authentication.RegisterFragment"
         android:label="@string/menu_register"
-        tools:layout="@layout/fragment_register" >
+        tools:layout="@layout/fragment_register">
         <action
             android:id="@+id/navigateFromRegisterToLogin"
             app:destination="@id/nav_login" />
@@ -94,13 +93,11 @@
             app:destination="@id/nav_profile" />
         <argument
             android:name="current_rhc"
-            app:argType="pt.ua.cm.bestwave.ui.review.ReviewHelperClass"
-            />
+            app:argType="pt.ua.cm.bestwave.ui.review.ReviewHelperClass" />
         <argument
             android:name="tag"
             app:argType="string"
-            android:defaultValue=""
-            />
+            android:defaultValue="" />
 
     </fragment>
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,55 +7,49 @@
     tools:context="ui.profile.ProfileFragment"
     android:orientation="horizontal"
     android:weightSum="10"
-    android:background="@drawable/line_bottom"
-    >
+    android:background="@drawable/line_bottom">
 
-  <ImageView
-      android:layout_weight="4"
-      android:layout_width="100dp"
-      android:layout_height="100dp"
-      android:id="@+id/imageReviewImageView"
-      android:src="@drawable/pic_profile_woman">
+    <ImageView
+        android:layout_weight="4"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/imageReviewImageView"
+        android:src="@drawable/logo"
+        android:alpha="0.2"
+        >
 
-  </ImageView>
+    </ImageView>
 
-  <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:id="@+id/dataTextViewProfile"
-      android:text="01/05"
-      android:textSize="20dp"
-      android:gravity="center"
-      android:layout_weight="1">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/dataTextViewProfile"
+        android:text="01/05"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:layout_weight="1">
 
-  </TextView>
-  <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:textSize="20dp"
-      android:id="@+id/starTextViewProfile"
-      android:text="4"
-      android:gravity="center"
-      android:layout_weight="2">
-  </TextView>
-  <TextView
-      android:layout_width="50dp"
-      android:layout_height="50dp"
-      android:textSize="20dp"
-      android:layout_weight="1"
-      android:textAlignment="center"
-      android:layout_gravity="center"
-      android:text="AveiroAveiro"
-      android:maxLines="1"
-      android:gravity="center"
-      >
-  </TextView>
+    </TextView>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="20dp"
+        android:id="@+id/starTextViewProfile"
+        android:text="4"
+        android:gravity="center"
+        android:layout_weight="2"></TextView>
 
-
-
-
-
+    <TextView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:textSize="20dp"
+        android:layout_weight="1"
+        android:textAlignment="center"
+        android:layout_gravity="center"
+        android:text="AveiroAveiro"
+        android:maxLines="1"
+        android:gravity="center"></TextView>
 
 
 </LinearLayout>

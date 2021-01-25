@@ -1,25 +1,31 @@
 package pt.ua.cm.bestwave;
 
 
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,18 +37,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import org.w3c.dom.Text;
-
 import pt.ua.cm.bestwave.ui.authentication.UserHelperClass;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,10 +44,10 @@ public class MainActivity extends AppCompatActivity {
     NavigationView navigationView;
     DrawerLayout drawer;
 
-    TextView nameSurname,email;
+    TextView nameSurname, email;
     ImageView picProfile;
     UserHelperClass uhc;
-
+    FloatingActionButton fab;
     //FIREBASE
     private FirebaseAuth mAuth;
 
@@ -79,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbarMain);
         setSupportActionBar(toolbar);
         //SETTING FAB
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab= findViewById(R.id.fab);
 
         //SETTING DRAWER LAYOUT
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -111,14 +105,14 @@ public class MainActivity extends AppCompatActivity {
         updateUI();
     }
 
-    public void updateUI(){
+    public void updateUI() {
         currentUser = mAuth.getCurrentUser();
 
-        if(currentUser != null){//LOGGED
+        if (currentUser != null) {//LOGGED
             navigationView.getMenu().getItem(3).setTitle("Logout");
             getUserFromDB();
 
-        }else {//NOT LOGGED
+        } else {//NOT LOGGED
             navigationView.getMenu().getItem(3).setTitle("Login");
             nameSurname.setText("");
             email.setText("");
@@ -128,15 +122,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void changeColorToBar(){
+    private void changeColorToBar() {
         Window window = getWindow();
         // clear FLAG_TRANSLUCENT_STATUS flag:
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         // finally change the color
-        window.setStatusBarColor(ContextCompat.getColor(this,R.color.bluMedio));
-    };
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.bluMedio));
+    }
+
+    ;
 
 
     @Override
@@ -146,32 +142,36 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-   private void setNavViewOnClickItem(){
+    private void setNavViewOnClickItem() {
 
-       navigationView.getMenu().getItem(3).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-           @Override
-           public boolean onMenuItemClick(MenuItem item) {
-               if (item.getTitle().toString().equals("Logout")){
-                   mAuth.signOut();
-                   updateUI();
-               }
-               else{
-                   updateUI();
-               }
-               return false;
-           }
-       });
+        navigationView.getMenu().getItem(3).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getTitle().toString().equals("Logout")) {
+                    mAuth.signOut();
+                    updateUI();
+                } else {
+                    updateUI();
+                }
+                if(item.getTitle().toString().equals(R.string.menu_maps)){
+                    fab.setVisibility(View.VISIBLE);
+                }
 
-   }
 
-     public void getUserFromDB(){
+                return false;
+            }
+        });
+
+    }
+
+    public void getUserFromDB() {
         reference = database.getReference("users").child(currentUser.getUid());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 uhc = snapshot.getValue(UserHelperClass.class);
-                nameSurname.setText(uhc.getName().toUpperCase()+" "+uhc.getSurname().toUpperCase());
+                nameSurname.setText(uhc.getName().toUpperCase() + " " + uhc.getSurname().toUpperCase());
                 email.setText((uhc.getEmail()));
                 //GET USER IMAGE
                 getUserImage();
@@ -184,13 +184,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void getUserImage(){
+    public void getUserImage() {
         storageReference = storage.getReference();
-        storageReference.child("profileImages/"+currentUser.getUid())
+        storageReference.child("profileImages/" + currentUser.getUid())
                 .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                if(uri!=null) {
+                if (uri != null) {
                     Glide.with(getApplicationContext()).load(uri).centerCrop().into(picProfile);
                 }
             }
@@ -202,12 +202,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
     }
 
-
-
-
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }

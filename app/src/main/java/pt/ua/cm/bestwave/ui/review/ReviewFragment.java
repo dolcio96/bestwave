@@ -1,19 +1,16 @@
 package pt.ua.cm.bestwave.ui.review;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +24,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -48,11 +42,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -75,7 +67,7 @@ public class ReviewFragment extends Fragment {
     Bitmap imageBitmap = null;
     Button sendReviewButton;
     EditText descriptionEditText;
-    TextView locationTextView,insertReviewTextView,ratingBarTextView,takeAPictureTextView,writeDescriptionTextView;
+    TextView locationTextView, insertReviewTextView, ratingBarTextView, takeAPictureTextView, writeDescriptionTextView;
 
     //MAP VARIABLE
     private FusedLocationProviderClient mFusedLocationClient;
@@ -113,7 +105,7 @@ public class ReviewFragment extends Fragment {
         getLocation();
         // get the Firebase  storage reference
         storageReference = storage.getReference();
-        if(user!=null){
+        if (user != null) {
             getUserFromDB();
         }
     }
@@ -170,13 +162,13 @@ public class ReviewFragment extends Fragment {
                     uuidImage = UUID.randomUUID().toString();
                     uploadImage();
                     sendDataToDatabase();
-                    drawSnackbar(getString(R.string.review_added),R.color.holoBlueDark).show();
+                    drawSnackbar(getString(R.string.review_added), R.color.holoBlueDark).show();
                     Navigation.findNavController(view).navigate(R.id.navigateFromReviewToMap);
-                    drawSnackbar(getString(R.string.review_uploaded),R.color.md_green_500).show();
+                    drawSnackbar(getString(R.string.review_uploaded), R.color.md_green_500).show();
 
 
                 } else {
-                    drawSnackbar(getString(R.string.field_cannot_be_empty),R.color.md_red_500).show();
+                    drawSnackbar(getString(R.string.field_cannot_be_empty), R.color.md_red_500).show();
                 }
             }
 
@@ -191,13 +183,14 @@ public class ReviewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if(mAuth.getCurrentUser()==null){
-            drawSnackbar(getString(R.string.you_have_to_login),R.color.md_red_500).show();
+        if (mAuth.getCurrentUser() == null) {
+            drawSnackbar(getString(R.string.you_have_to_login), R.color.md_red_500).show();
             Navigation.findNavController(view).navigate(R.id.navigateFromReviewToLogin);
-        }else {
+        } else {
 
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -213,13 +206,13 @@ public class ReviewFragment extends Fragment {
             imageBitmap = (Bitmap) extras.get("data");
             //ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             //imageBitmap.compress(Bitmap.CompressFormat.JPEG,,bytes);
-            filePath = Uri.parse(MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), imageBitmap,"Title",null));
+            filePath = Uri.parse(MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), imageBitmap, "Title", null));
             imageButtonCamera.setImageBitmap(imageBitmap);
 
         }
     }
 
-    public void getUserFromDB(){
+    public void getUserFromDB() {
 
         uuidUser = user.getUid();
         DatabaseReference referenceUser = database.getReference("users").child(uuidUser);
@@ -228,7 +221,7 @@ public class ReviewFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 UserHelperClass uhc = snapshot.getValue(UserHelperClass.class);
-                username=uhc.getUsername();
+                username = uhc.getUsername();
             }
 
             @Override
@@ -237,6 +230,7 @@ public class ReviewFragment extends Fragment {
             }
         });
     }
+
     //GET CURRENT LOCATION ADDRESS AND LONGITUDE/LATITUDE
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -264,10 +258,11 @@ public class ReviewFragment extends Fragment {
                     }
                 }
             });
-        }else {
+        } else {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
     }
+
     //CHECK FIELDS FORMAT
     private boolean checkFields() {
         if (latLng != null && imageSet) {
@@ -276,6 +271,7 @@ public class ReviewFragment extends Fragment {
             return false;
         }
     }
+
     //UPLOAD IMAGE TO STORAGE
     private void uploadImage() {
         if (filePath != null) {
@@ -297,11 +293,11 @@ public class ReviewFragment extends Fragment {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            //TODO
                         }
                     });
         }
     }
+
     //SEND REVIEW TO DATABASE
     private void sendDataToDatabase() {
         //Initialize firebase database
@@ -309,12 +305,13 @@ public class ReviewFragment extends Fragment {
         reference = database.getReference("reviews");
 
         ReviewHelperClass reviewHelperClass = new ReviewHelperClass(uuidUser, latLng.latitude, latLng.longitude,
-                ratingBar.getRating(), descriptionEditText.getText().toString(),new Date());
+                ratingBar.getRating(), descriptionEditText.getText().toString(), new Date());
 
         reference.child(uuidImage).setValue(reviewHelperClass);
         sendMarkerTDB();
 
     }
+
     //SEND MARKER TO DATABASE
     private void sendMarkerTDB() {
         //Initialize firebase database
@@ -331,10 +328,6 @@ public class ReviewFragment extends Fragment {
         return snackbar;
     }
     //ON ACTIVITY RESULT FROM CAMERA
-
-
-
-
 
 
 }

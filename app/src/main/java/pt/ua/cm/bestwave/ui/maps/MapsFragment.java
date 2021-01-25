@@ -1,5 +1,20 @@
 package pt.ua.cm.bestwave.ui.maps;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -9,26 +24,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
-
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.os.Build;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.SearchView;
-import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -43,46 +38,39 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import pt.ua.cm.bestwave.MainActivity;
-import pt.ua.cm.bestwave.ProfileReviewFragment;
 import pt.ua.cm.bestwave.R;
 import pt.ua.cm.bestwave.SearchBarFragment;
-import pt.ua.cm.bestwave.ui.profile.HelperAdapterProfile;
-import pt.ua.cm.bestwave.ui.profile.ReviewDetail;
-import pt.ua.cm.bestwave.ui.review.ReviewHelperClass;
 
 public class MapsFragment extends Fragment {
+    //MAP
+    GoogleMap map;
+    FusedLocationProviderClient client;
+    LatLng currentLatLng;
 
     SupportMapFragment supportMapFragment;
-    FragmentManager fm;
-    FusedLocationProviderClient client;
-    GoogleMap map;
-    SearchBarFragment bar;
+    FloatingActionButton fab;
     String tag;
     View view;
-    LatLng currentLatLng;
-    private FirebaseAuth mAuth;
-    FloatingActionButton fab;
+
+
+    //FIREBASE
+    FirebaseAuth mAuth;
+    FirebaseDatabase database;
+    DatabaseReference reference;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
-
+        database = FirebaseDatabase.getInstance();
 
     }
 
@@ -91,12 +79,10 @@ public class MapsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
         view = inflater.inflate(R.layout.fragment_maps, container, false);
 
         return view;
     }
-
 
 
     @Override
@@ -106,64 +92,57 @@ public class MapsFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,8));
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 8));
             }
         });
-
+        fab.setVisibility(View.VISIBLE);
         supportMapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
 
         client = LocationServices.getFusedLocationProviderClient(getActivity());
         //check permission
-        if(ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             getCurrentLocation();
             //setSearchView(view);
-        }
-        else{
+        } else {
             //Request permission
-            ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},44);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
 
 
     }
+
     @Override
     public void onStart() {
         super.onStart();
-        MainActivity ma =(MainActivity) getActivity();
+        MainActivity ma = (MainActivity) getActivity();
         ma.updateUI();
-        fab.show();
+
+        fab.setVisibility(View.VISIBLE);
     }
 
-    private void getCurrentLocation(){
+    private void getCurrentLocation() {
         @SuppressLint("MissingPermission") Task<Location> task = client.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(final Location location) {
-                if (location!=null){
+                if (location != null) {
                     supportMapFragment.getMapAsync(new OnMapReadyCallback() {
                         @Override
                         public void onMapReady(GoogleMap googleMap) {
                             map = googleMap;
-                            currentLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-                            Marker marker =  map.addMarker(new MarkerOptions().position(currentLatLng)
-                                    .icon(BitmapDescriptorFactory.fromBitmap((getBitmapFromVectorDrawable(getContext(),R.drawable.ic_van_de_surf))))
+                            currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                            Marker marker = map.addMarker(new MarkerOptions().position(currentLatLng)
+                                    .icon(BitmapDescriptorFactory.fromBitmap((getBitmapFromVectorDrawable(getContext(), R.drawable.ic_van_de_surf))))
                                     .title("Current Location")
                                     .zIndex(999));
-                            //marker.setTitle("View Review");
                             marker.setTag("CURRENT");
-                          /*  MarkerOptions options= new MarkerOptions().position(latLng).title("Current Location")
-                                    .icon(BitmapDescriptorFactory.fromBitmap((getBitmapFromVectorDrawable(getContext(),R.drawable.ic_van_de_surf))))
-                                    .zIndex(999);
-                            googleMap.addMarker(options);*/
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,7));
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 7));
                             addSearchView(googleMap);
                             setMarkerToMap();
                         }
 
                     });
-                }
-                else {
-                    Log.d("LOCATION NULL","LOCATION NULL");
                 }
             }
 
@@ -186,80 +165,77 @@ public class MapsFragment extends Fragment {
     }
 
     private void setMarkerToMap() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference().child("markers");
 
-        ref.addValueEventListener(new ValueEventListener() {
+        reference = database.getReference().child("markers");
+
+        reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 tag = "";
                 String ltd = "";
                 String lng = "";
-
-                for (final DataSnapshot id : snapshot.getChildren()){
-                    for(DataSnapshot ltdlng : id.getChildren()){
-                        if(ltdlng.getKey().equals("latitude")){
+                //FOREACH MARKER TAKE THE LATITUDE, LONGITUDE AND TAG
+                for (final DataSnapshot id : snapshot.getChildren()) {
+                    for (DataSnapshot ltdlng : id.getChildren()) {
+                        if (ltdlng.getKey().equals("latitude")) {
                             ltd = String.valueOf(ltdlng.getValue());
-                        }else{
+                        } else {
                             lng = String.valueOf(ltdlng.getValue());
                         }
-                        tag=String.valueOf(id.getKey());
+                        tag = String.valueOf(id.getKey());
                     }
-                    LatLng reviewPosition = new LatLng(Double.parseDouble(ltd),Double.parseDouble(lng));
-                    Marker marker =  map.addMarker(new MarkerOptions()
+                    LatLng reviewPosition = new LatLng(Double.parseDouble(ltd), Double.parseDouble(lng));
+                    //CREATE MARKER AND SET TAG
+                    Marker marker = map.addMarker(new MarkerOptions()
                             .position(reviewPosition));
-                    //marker.setTitle("View Review");
                     marker.setTag(tag);
-
-                    //map.addMarker(new MarkerOptions().position(reviewPosition)).setTitle("View Review");
                     map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(Marker marker) {
-                            if(!marker.getTag().toString().equals("CURRENT")){
+                            if (!marker.getTag().toString().equals("CURRENT")) {
                                 String currentTag = String.valueOf(marker.getTag());
                                 MapsFragmentDirections.NavigateFromMapToProfileReview action =
-                                MapsFragmentDirections.navigateFromMapToProfileReview();
+                                        MapsFragmentDirections.navigateFromMapToProfileReview();
                                 action.setCurrentTag(currentTag);
                                 Navigation.findNavController(view).navigate(action);
                             }
-
-
                             return false;
                         }
                     });
-                    //setMarkerInfoWindow();
-
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
-
-
     }
 
-    private void addSearchView(GoogleMap map){
-        fm = getParentFragmentManager();
+    private void addSearchView(GoogleMap map) {
+        FragmentManager fm = getParentFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        bar = new SearchBarFragment(map);
-        ft.add(R.id.map,bar).addToBackStack(null).commit();
+        SearchBarFragment bar = new SearchBarFragment(map);
+        ft.add(R.id.map, bar).addToBackStack(null).commit();
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode==44){
-            if (grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+        if (requestCode == 44) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getCurrentLocation();
             }
         }
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        fab.hide();
+    public void onStop() {
+        super.onStop();
+        fab.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        fab.setVisibility(View.VISIBLE);
     }
 }

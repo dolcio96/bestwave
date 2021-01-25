@@ -2,12 +2,12 @@ package pt.ua.cm.bestwave.ui.authentication;
 
 public class UserHelperClass {
 
-    String username,email,name,surname,password;
+    String username, email, name, surname, password;
 
     public UserHelperClass() {
     }
 
-    public UserHelperClass(String username, String email, String name,String surname, String password) {
+    public UserHelperClass(String username, String email, String name, String surname, String password) {
         this.username = username;
         this.email = email;
         this.name = name;

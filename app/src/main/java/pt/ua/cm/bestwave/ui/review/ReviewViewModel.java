@@ -22,22 +22,26 @@ public class ReviewViewModel extends ViewModel {
         mTextRatingBar.setValue("Rating Bar");
         mTextTakeAPicture = new MutableLiveData<>();
         mTextTakeAPicture.setValue("Take a Picture");
-        mTextWriteDescription =new MutableLiveData<>();
+        mTextWriteDescription = new MutableLiveData<>();
         mTextWriteDescription.setValue("Write a Description");
     }
 
     public LiveData<String> getTextInsertReview() {
         return mTextInsertReview;
     }
+
     public LiveData<String> getTextLocation() {
         return mTextLocation;
     }
+
     public LiveData<String> getTextRatingBar() {
         return mTextRatingBar;
     }
+
     public LiveData<String> getTextTakeAPicture() {
         return mTextTakeAPicture;
     }
+
     public LiveData<String> getTextWriteDescription() {
         return mTextWriteDescription;
     }

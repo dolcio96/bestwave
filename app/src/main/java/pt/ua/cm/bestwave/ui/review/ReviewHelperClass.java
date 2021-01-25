@@ -2,18 +2,18 @@ package pt.ua.cm.bestwave.ui.review;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 public class ReviewHelperClass implements Serializable {
-    String uuidUser,description;
+    String uuidUser, description;
     float stars;
-    double latitude,longitude;
+    double latitude, longitude;
     Date date;
 
     public ReviewHelperClass() {
 
     }
-    public ReviewHelperClass(String uuidUser, double latitude, double longitude,  float stars, String description,Date date) {
+
+    public ReviewHelperClass(String uuidUser, double latitude, double longitude, float stars, String description, Date date) {
         this.uuidUser = uuidUser;
         this.latitude = latitude;
         this.longitude = longitude;

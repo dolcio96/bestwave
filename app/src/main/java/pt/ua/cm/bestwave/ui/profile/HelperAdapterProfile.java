@@ -2,7 +2,6 @@ package pt.ua.cm.bestwave.ui.profile;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.google.firebase.storage.StorageReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 import pt.ua.cm.bestwave.R;
@@ -43,25 +41,25 @@ public class HelperAdapterProfile
     StorageReference storageReference;
 
     public class ProfileViewHolderClass extends RecyclerView.ViewHolder {
-        TextView textViewDate,textViewScore;
+        TextView textViewDate, textViewScore;
         ImageView imageView;
         final HelperAdapterProfile mAdapter;
+
         public ProfileViewHolderClass(@NonNull View itemView, HelperAdapterProfile adapter) {
             super(itemView);
             this.mAdapter = adapter;
-            textViewDate=(TextView)itemView.findViewById(R.id.dataTextViewProfile);
-            textViewScore=(TextView)itemView.findViewById(R.id.starTextViewProfile);
-            imageView=(ImageView)itemView.findViewById(R.id.imageReviewImageView);
+            textViewDate = (TextView) itemView.findViewById(R.id.dataTextViewProfile);
+            textViewScore = (TextView) itemView.findViewById(R.id.starTextViewProfile);
+            imageView = (ImageView) itemView.findViewById(R.id.imageReviewImageView);
         }
     }
 
 
-    public HelperAdapterProfile(HashMap<String, ReviewHelperClass> reviewMap){
-        this.context=context;
-        this.reviewMap=reviewMap;
+    public HelperAdapterProfile(HashMap<String, ReviewHelperClass> reviewMap) {
+        this.reviewMap = reviewMap;
         for (Map.Entry entry : reviewMap.entrySet()) {
-            arrayListReview.add((ReviewHelperClass)entry.getValue());
-            keys.add((String)entry.getKey());
+            arrayListReview.add((ReviewHelperClass) entry.getValue());
+            keys.add((String) entry.getKey());
         }
     }
 
@@ -72,32 +70,30 @@ public class HelperAdapterProfile
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rw_profile,parent,false);
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rw_profile, parent, false);
         //viewHolderClass= new ProfileViewHolderClass(view);
-        return new ProfileViewHolderClass(view,this);
+        return new ProfileViewHolderClass(view, this);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
-        viewHolderClass=(ProfileViewHolderClass)holder;
-
+        viewHolderClass = (ProfileViewHolderClass) holder;
+        //GET REVIEW CLASS
         rhc = arrayListReview.get(position);
-
-        Log.d("qwerty",String.valueOf(position));
-        Log.d("qwerty",String.valueOf(rhc.getDescription()));
-
-
+        //SET TEXTVIEWS AND COMPONENTS
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM");
         viewHolderClass.textViewDate.setText(String.valueOf(formatter.format(rhc.getDate())));
-        viewHolderClass.textViewScore.setText(String.valueOf(rhc.getStars())+"/5");
+        viewHolderClass.textViewScore.setText(String.valueOf(rhc.getStars()) + "/5");
 
 
         listOfViewOlderImages.add((ImageView) viewHolderClass.imageView);
-        storageReference.child("images/"+keys.get(position))
+        //GET IMAGE FROM DATABASE
+        storageReference.child("images/" + keys.get(position))
                 .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 Glide.with(viewHolderClass.imageView.getContext()).load(uri).centerCrop().into(listOfViewOlderImages.get(position));
+                listOfViewOlderImages.get(position).setAlpha((float)1.0);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -105,18 +101,16 @@ public class HelperAdapterProfile
                 // Handle any errors
             }
         });
+        //SET TAG TO ITEMVIEW FOR MAKE A MAP
         viewHolderClass.itemView.setTag(keys.get(position));
         viewHolderClass.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                ProfileFragmentDirections.NavigateFromProfileToReviewDetail action =
-                        ProfileFragmentDirections.navigateFromProfileToReviewDetail(reviewMap.get(v.getTag()));
-                action.setCurrentRhc(reviewMap.get(v.getTag()));
-                action.setTag(String.valueOf(v.getTag()));
-
-                Navigation.findNavController(view).navigate(action);
-
+            ProfileFragmentDirections.NavigateFromProfileToReviewDetail action =
+                    ProfileFragmentDirections.navigateFromProfileToReviewDetail(reviewMap.get(v.getTag()));
+            action.setCurrentRhc(reviewMap.get(v.getTag()));
+            action.setTag(String.valueOf(v.getTag()));
+            Navigation.findNavController(view).navigate(action);
             }
         });
 
@@ -126,8 +120,6 @@ public class HelperAdapterProfile
     public int getItemCount() {
         return arrayListReview.size();
     }
-
-
 
 
 }

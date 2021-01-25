@@ -1,15 +1,7 @@
 package pt.ua.cm.bestwave.ui.authentication;
 
-import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,18 +9,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import pt.ua.cm.bestwave.R;
 
@@ -37,7 +28,7 @@ public class LoginFragment extends Fragment {
     //AUTHENTICATION
     private FirebaseAuth mAuth;
     EditText regEmail, regPassword;
-    Button buttonRegister,buttonLogin;
+    Button buttonRegister, buttonLogin;
     FirebaseUser user;
 
     @Override
@@ -47,7 +38,6 @@ public class LoginFragment extends Fragment {
         user = mAuth.getCurrentUser();
 
 
-
     }
 
     @Override
@@ -55,51 +45,44 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
-        //if(user != null){
-        //    mAuth.signOut();
-        //    Navigation.findNavController(view).navigate(R.id.navigateFromLoginToMap);
-        //}
-        //mAuth =FirebaseAuth.getInstance();
+        //GET VIEWS
         regEmail = view.findViewById(R.id.editEmail);
         regPassword = view.findViewById(R.id.editTextPassword);
         buttonRegister = view.findViewById(R.id.button_signup);
+        buttonLogin = view.findViewById(R.id.button_login);
+        //SET LISTENER
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Navigation.findNavController(v).navigate(R.id.navigateFromLoginToRegister);
             }
         });
-        buttonLogin = view.findViewById(R.id.button_login);
-
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginUser(v);
-
-
+                //LOGIN THE USER AFTER THE VALIDATION
+                loginUser();
             }
         });
-
         return view;
     }
-    public void loginUser(View view){
-        if(isValidEmail() && isValidPassword()){
+
+    public void loginUser() {
+        if (isValidEmail() && isValidPassword()) {
+            //LOGIN USER IN FIREBASE
             logInUserValidate();
+        } else {
+            drawSnackbar(getString(R.string.check_the_fields), R.color.md_red_500).show();
         }
-        else{
-            drawSnackbar(getString(R.string.check_the_fields),R.color.md_red_500).show();
-        }
-
-
     }
 
     public boolean isValidEmail() {
         String email = regEmail.getText().toString();
-        if (TextUtils.isEmpty(email)){
+        if (TextUtils.isEmpty(email)) {
             regEmail.setError(getString(R.string.field_cannot_be_empty));
             return false;
         }
-        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             regEmail.setError(getString(R.string.wrong_email_format));
             return false;
         }
@@ -107,23 +90,22 @@ public class LoginFragment extends Fragment {
         return true;
     }
 
-    private Boolean isValidPassword(){
+    private Boolean isValidPassword() {
         String pass = regPassword.getText().toString();
-        if (pass.isEmpty()){
+        if (pass.isEmpty()) {
             regPassword.setError(getString(R.string.field_cannot_be_empty));
             return false;
         }
-        if(pass.length()<8){
+        if (pass.length() < 8) {
             regPassword.setError(getString(R.string.password_must_be_longer));
             return false;
-        }
-        else{
+        } else {
             regPassword.setError(null);
             return true;
         }
     }
 
-    public void logInUserValidate(){
+    public void logInUserValidate() {
         final String email = regEmail.getText().toString().trim();
         final String password = regPassword.getText().toString().trim();
         mAuth.signInWithEmailAndPassword(email, password)
@@ -132,19 +114,18 @@ public class LoginFragment extends Fragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's informations
-                            drawSnackbar(getString(R.string.welcome) + email + " !",R.color.md_green_500).show();
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            drawSnackbar(getString(R.string.welcome) + email + " !", R.color.md_green_500).show();
                             //NAVIGATE TO HOME (MAP)
                             Navigation.findNavController(getView()).navigate(R.id.navigateFromLoginToMap);
                         } else {
-                            drawSnackbar(getString(R.string.fail_to_login),R.color.md_red_500).show();
+                            drawSnackbar(getString(R.string.fail_to_login), R.color.md_red_500).show();
                         }
                     }
                 });
     }
 
-    private Snackbar drawSnackbar(String text, int color){
-        Snackbar snackbar =  Snackbar.make(getView(), text, Snackbar.LENGTH_LONG)
+    private Snackbar drawSnackbar(String text, int color) {
+        Snackbar snackbar = Snackbar.make(getView(), text, Snackbar.LENGTH_LONG)
                 .setBackgroundTint(getActivity().getResources().getColor(color));
         return snackbar;
     }

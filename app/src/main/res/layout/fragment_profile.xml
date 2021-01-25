@@ -7,14 +7,12 @@
     android:id="@+id/profile_container"
     android:fitsSystemWindows="true"
     tools:context="ui.profile.ProfileFragment"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/app_bar_profile"
@@ -24,8 +22,7 @@
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:padding="2dp"
-            android:background="@drawable/side_nav_bar"
-            >
+            android:background="@drawable/side_nav_bar">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/toolbar_layout"
@@ -58,14 +55,13 @@
                         android:orientation="vertical"
                         android:layout_marginBottom="8dp">
 
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:id="@+id/profile_image_image_view"
                             android:layout_width="96dp"
                             android:layout_height="96dp"
                             android:src="@drawable/user_register_pic"
-                            app:civ_border_width="3dp"
-                            app:civ_border_color="@color/bluMedio"/>
+                            app:civ_border_width="2dp"
+                            app:civ_border_color="@color/bluMedio" />
 
 
                     </RelativeLayout>
@@ -98,8 +94,7 @@
                         android:text="bestwave@gmail.com"
                         android:textSize="18dp"
                         android:id="@+id/email_profile_text_view"
-                        android:textStyle="bold"/>
-
+                        android:textStyle="bold" />
 
 
                 </LinearLayout>
@@ -111,16 +106,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:id="@+id/containter_recyclerview_review"
-            >
+            android:id="@+id/containter_recyclerview_review">
+
             <include
                 layout="@layout/item_rw_profile_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/recyclerviewItem"/>
+                android:id="@+id/recyclerviewItem" />
         </LinearLayout>
 
     </LinearLayout>

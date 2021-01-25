@@ -20,7 +20,7 @@
     <string name="wrong_email_format">Formato email non corretto</string>
     <string name="password_must_be_longer">La password deve essere più lunga di 8 caratteri</string>
     <string name="welcome">Benvenuto!</string>
-    <string name="fail_to_login">Login non riuscito, prova più tardi</string>
+    <string name="fail_to_login">Email o password errate</string>
     <string name="doesnt_respect_format">Alcuni campi non rispettano il formato</string>
     <string name="user_added">Utente aggiunto. Benvenuto!</string>
     <string name="signup_fail">Registrazione non riuscita, riprova più tardi</string>

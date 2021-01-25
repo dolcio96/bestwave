@@ -50,14 +50,25 @@
                     android:background="@drawable/side_nav_bar"
                     android:padding="2dp">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/profile_image_image_view"
-                        android:layout_width="96dp"
-                        android:layout_height="96dp"
+                    <RelativeLayout
+                        android:id="@+id/signup_image_layout"
+                        android:layout_gravity="center"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="8dp">
 
-                        app:civ_border_width="4dp"
-                        app:civ_border_color="@color/bluMedio"/>
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                            android:id="@+id/profile_image_image_view"
+                            android:layout_width="96dp"
+                            android:layout_height="96dp"
+                            android:src="@drawable/user_register_pic"
+                            app:civ_border_width="3dp"
+                            app:civ_border_color="@color/bluMedio"/>
+
+
+                    </RelativeLayout>
 
                     <LinearLayout
                         android:orientation="horizontal"
@@ -98,7 +109,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:id="@+id/containter_recyclerview_review"
             >

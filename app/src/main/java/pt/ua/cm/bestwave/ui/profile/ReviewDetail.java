@@ -136,6 +136,7 @@ public class ReviewDetail extends Fragment {
             public void onSuccess(Uri uri) {
 
                Glide.with(view.getContext()).load(uri).centerCrop().into(reviewImage);
+               reviewImage.setAlpha((float) 1.0);
 
             }
         }).addOnFailureListener(new OnFailureListener() {

@@ -185,6 +185,7 @@ public class ProfileReviewFragment extends Fragment {
 
                     Glide.with(view.getContext()).load(uri).centerCrop().into(profileImage);
 
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -203,6 +204,7 @@ public class ProfileReviewFragment extends Fragment {
             public void onSuccess(Uri uri) {
 
                     Glide.with(view.getContext()).load(uri).centerCrop().into(reviewImage);
+                    reviewImage.setAlpha((float) 1.0);
 
             }
         }).addOnFailureListener(new OnFailureListener() {

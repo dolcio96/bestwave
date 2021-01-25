@@ -76,11 +76,13 @@ public class MapsFragment extends Fragment {
     View view;
     LatLng currentLatLng;
     private FirebaseAuth mAuth;
+    FloatingActionButton fab;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+
 
     }
 
@@ -94,11 +96,19 @@ public class MapsFragment extends Fragment {
 
         return view;
     }
+    @Override
+    public void onStart() {
+        super.onStart();
+        MainActivity ma =(MainActivity) getActivity();
+        ma.updateUI(mAuth.getCurrentUser());
+        fab.show();
+    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+        fab = getActivity().findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -243,15 +253,12 @@ public class MapsFragment extends Fragment {
             if (grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
                 getCurrentLocation();
             }
-
         }
     }
 
-
     @Override
-    public void onStart() {
-        super.onStart();
-        MainActivity ma =(MainActivity) getActivity();
-        ma.updateUI(mAuth.getCurrentUser());
+    public void onPause() {
+        super.onPause();
+        fab.hide();
     }
 }

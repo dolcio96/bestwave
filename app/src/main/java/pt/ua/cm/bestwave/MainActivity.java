@@ -1,6 +1,9 @@
 package pt.ua.cm.bestwave;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -8,14 +11,27 @@ import android.view.View;
 import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -25,28 +41,39 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import org.w3c.dom.Text;
+
+import pt.ua.cm.bestwave.ui.authentication.UserHelperClass;
+
 public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     NavigationView navigationView;
     DrawerLayout drawer;
+
+    TextView nameSurname,email;
+    ImageView picProfile;
+    UserHelperClass uhc;
+
     //FIREBASE
     private FirebaseAuth mAuth;
+
+    FirebaseStorage storage;
+    StorageReference storageReference;
+    //FIREBASE DATABASE
+    FirebaseDatabase database;
+    DatabaseReference reference;
+    FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //FIREBESE INSTNCE
-        mAuth = FirebaseAuth.getInstance();
-
-        if(mAuth.getCurrentUser()==null){
-            Log.d("LOGOUT","LOGOUT");
-        }
-        else{
-            Log.d("LOGIN","LOGIN");
-        }
-
-
         setContentView(R.layout.activity_main);
+
+        //FIREBESE INSTANCE
+        mAuth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance();
+        storage = FirebaseStorage.getInstance();
+
         changeColorToBar();
         //SETTING TOOLBAR
         Toolbar toolbar = findViewById(R.id.toolbarMain);
@@ -55,33 +82,24 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
 
         //SETTING DRAWER LAYOUT
-        drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_maps, R.id.nav_review, R.id.nav_profile, R.id.nav_login)
-                .setDrawerLayout(drawer)
+                .setOpenableLayout(drawer)
                 .build();
         //SETTING NAV CONTROLLER
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-
+        //SET LOGOUT ON CLICK OF LOCOUT AND UPDATE THE UI
         setNavViewOnClickItem();
-        navigationView.getMenu().getItem(3).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getTitle().toString().equals("Logout")){
-                    mAuth.signOut();
-                    updateUI(mAuth.getCurrentUser());
-                }
-                return false;
-            }
-        });
+
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-
-
+        View header = navigationView.getHeaderView(0);
+        nameSurname = header.findViewById(R.id.textViewNameNavHeader);
+        email = header.findViewById(R.id.textViewMailNavHeader);
+        picProfile = header.findViewById(R.id.imageViewNavHeader);
 
 
     }
@@ -90,18 +108,22 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+        updateUI();
     }
 
-    public void updateUI(FirebaseUser account){
+    public void updateUI(){
+        currentUser = mAuth.getCurrentUser();
 
-        if(account != null){//LOGGED
+        if(currentUser != null){//LOGGED
             navigationView.getMenu().getItem(3).setTitle("Logout");
-
+            getUserFromDB();
 
         }else {//NOT LOGGED
             navigationView.getMenu().getItem(3).setTitle("Login");
+            nameSurname.setText("");
+            email.setText("");
+            picProfile.setImageBitmap(BitmapFactory.decodeResource(getResources(),
+                    R.drawable.user_register_pic));
         }
 
     }
@@ -116,12 +138,6 @@ public class MainActivity extends AppCompatActivity {
         window.setStatusBarColor(ContextCompat.getColor(this,R.color.bluMedio));
     };
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -133,16 +149,65 @@ public class MainActivity extends AppCompatActivity {
    private void setNavViewOnClickItem(){
 
        navigationView.getMenu().getItem(3).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
+           @Override
+           public boolean onMenuItemClick(MenuItem item) {
+               if (item.getTitle().toString().equals("Logout")){
+                   mAuth.signOut();
+                   updateUI();
+               }
+               else{
+                   updateUI();
+               }
+               return false;
+           }
+       });
 
-                    if (item.getTitle().toString().equals("Logout")){
-                        mAuth.signOut();
-                        updateUI(mAuth.getCurrentUser());
-                    }
-                return false;
+   }
+
+     public void getUserFromDB(){
+        reference = database.getReference("users").child(currentUser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                uhc = snapshot.getValue(UserHelperClass.class);
+                nameSurname.setText(uhc.getName().toUpperCase()+" "+uhc.getSurname().toUpperCase());
+                email.setText((uhc.getEmail()));
+                //GET USER IMAGE
+                getUserImage();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void getUserImage(){
+        storageReference = storage.getReference();
+        storageReference.child("profileImages/"+currentUser.getUid())
+                .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                if(uri!=null) {
+                    Glide.with(getApplicationContext()).load(uri).centerCrop().into(picProfile);
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
             }
         });
 
-   }
+
+
+
+    }
+
+
+
+
+
 }

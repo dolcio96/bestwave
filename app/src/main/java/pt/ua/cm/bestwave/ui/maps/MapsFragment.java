@@ -96,13 +96,7 @@ public class MapsFragment extends Fragment {
 
         return view;
     }
-    @Override
-    public void onStart() {
-        super.onStart();
-        MainActivity ma =(MainActivity) getActivity();
-        ma.updateUI(mAuth.getCurrentUser());
-        fab.show();
-    }
+
 
 
     @Override
@@ -131,6 +125,13 @@ public class MapsFragment extends Fragment {
         }
 
 
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        MainActivity ma =(MainActivity) getActivity();
+        ma.updateUI();
+        fab.show();
     }
 
     private void getCurrentLocation(){

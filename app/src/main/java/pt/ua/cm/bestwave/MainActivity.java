@@ -21,6 +21,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.Worker;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -94,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
         nameSurname = header.findViewById(R.id.textViewNameNavHeader);
         email = header.findViewById(R.id.textViewMailNavHeader);
         picProfile = header.findViewById(R.id.imageViewNavHeader);
-
 
     }
 

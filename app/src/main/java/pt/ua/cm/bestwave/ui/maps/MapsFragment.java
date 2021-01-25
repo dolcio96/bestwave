@@ -24,6 +24,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -45,9 +47,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import pt.ua.cm.bestwave.MainActivity;
 import pt.ua.cm.bestwave.R;
 import pt.ua.cm.bestwave.SearchBarFragment;
+import pt.ua.cm.bestwave.Work;
 
 public class MapsFragment extends Fragment {
     //MAP
@@ -59,6 +65,7 @@ public class MapsFragment extends Fragment {
     FloatingActionButton fab;
     String tag;
     View view;
+    HashMap<String,LatLng> markersMap = new HashMap<String, LatLng>();
 
 
     //FIREBASE
@@ -127,6 +134,7 @@ public class MapsFragment extends Fragment {
             @Override
             public void onSuccess(final Location location) {
                 if (location != null) {
+                    //SET MAP STUFF
                     supportMapFragment.getMapAsync(new OnMapReadyCallback() {
                         @Override
                         public void onMapReady(GoogleMap googleMap) {
@@ -143,6 +151,8 @@ public class MapsFragment extends Fragment {
                         }
 
                     });
+
+
                 }
             }
 
@@ -185,6 +195,7 @@ public class MapsFragment extends Fragment {
                         tag = String.valueOf(id.getKey());
                     }
                     LatLng reviewPosition = new LatLng(Double.parseDouble(ltd), Double.parseDouble(lng));
+                    markersMap.put(tag,reviewPosition);
                     //CREATE MARKER AND SET TAG
                     Marker marker = map.addMarker(new MarkerOptions()
                             .position(reviewPosition));
@@ -203,6 +214,7 @@ public class MapsFragment extends Fragment {
                         }
                     });
                 }
+                checkIfMarkersNearCurrentLocation();
             }
 
             @Override
@@ -238,4 +250,19 @@ public class MapsFragment extends Fragment {
 
         fab.setVisibility(View.VISIBLE);
     }
+
+    public void checkIfMarkersNearCurrentLocation(){
+        for (Map.Entry entry : markersMap.entrySet()) {
+            LatLng entryLatLng = (LatLng) entry.getValue();
+            if(entryLatLng.latitude<currentLatLng.latitude+5 && entryLatLng.latitude>currentLatLng.latitude-5
+                    && entryLatLng.longitude<currentLatLng.longitude+5 && entryLatLng.longitude>currentLatLng.longitude-5){
+                OneTimeWorkRequest simpleRequest = new OneTimeWorkRequest.Builder(Work.class)
+                        .build();
+                WorkManager.getInstance().enqueue(simpleRequest);
+                return;
+            }
+
+        }
+    }
+
 }

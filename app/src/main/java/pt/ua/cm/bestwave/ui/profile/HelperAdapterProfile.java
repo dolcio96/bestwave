@@ -71,7 +71,6 @@ public class HelperAdapterProfile
         storageReference = storage.getReference();
 
         view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_rw_profile, parent, false);
-        //viewHolderClass= new ProfileViewHolderClass(view);
         return new ProfileViewHolderClass(view, this);
     }
 

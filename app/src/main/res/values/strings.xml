@@ -58,4 +58,6 @@
     <string name="rating_bar" translatable="false">Rating Bar</string>
     <string name="take_picture">Take a Picture</string>
     <string name="write_description">Write a Description</string>
+    <string name="someone_nearby">There is someone nearby</string>
+    <string name="someone_upload_review">Today someone uploaded a review close to you, check it!</string>
 </resources>

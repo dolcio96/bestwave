@@ -36,8 +36,6 @@ public class LoginFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-
-
     }
 
     @Override

@@ -31,12 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Work extends Worker {
-    String tag;
-    FirebaseDatabase database;
-    DatabaseReference reference;
-    HashMap<String,LatLng> markersMap = new HashMap<String, LatLng>();
-    FusedLocationProviderClient client;
-    
+
     public Work(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
     }
@@ -44,10 +39,7 @@ public class Work extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        //database = FirebaseDatabase.getInstance();
-        //reference=database.getReference();
-        //getMarkerFromDb();
-        sendNotification("Someone in the neighbor", "Today someone uploaded a review close to you, check it!");
+        sendNotification(getApplicationContext().getString(R.string.someone_nearby), getApplicationContext().getString(R.string.someone_upload_review));
         return Result.success();
     }
 
@@ -63,7 +55,7 @@ public class Work extends Worker {
         NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext(), "default")
                 .setContentTitle(title)
                 .setContentText(message)
-                .setSmallIcon(R.mipmap.ic_launcher);
+                .setSmallIcon(R.drawable.logo);
 
         notificationManager.notify(1, notification.build());
     }

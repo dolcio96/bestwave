@@ -35,4 +35,6 @@
     <string name="location">Sua localização</string>
     <string name="take_picture">Sirar uma foto</string>
     <string name="write_description">Escreva uma descrição</string>
+    <string name="someone_nearby">Há alguém por aqui</string>
+    <string name="someone_upload_review">Alguém fez o upload de uma revisão ao seu lado hoje, confira!</string>
 </resources>

@@ -1,6 +1,8 @@
 package pt.ua.cm.bestwave.ui.profile;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,14 +15,18 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import pt.ua.cm.bestwave.R;
@@ -36,12 +42,16 @@ public class HelperAdapterProfile
     ProfileViewHolderClass viewHolderClass;
     HashMap<String, ReviewHelperClass> reviewMap;
     View view;
+    Geocoder geocoder;
+    List<Address> addresses;
+    ArrayList<String> listOfCity= new  ArrayList<String>();
+
 
     FirebaseStorage storage;
     StorageReference storageReference;
 
     public class ProfileViewHolderClass extends RecyclerView.ViewHolder {
-        TextView textViewDate, textViewScore;
+        TextView textViewDate, textViewScore,textViewLocation;
         ImageView imageView;
         final HelperAdapterProfile mAdapter;
 
@@ -50,12 +60,14 @@ public class HelperAdapterProfile
             this.mAdapter = adapter;
             textViewDate = (TextView) itemView.findViewById(R.id.dataTextViewProfile);
             textViewScore = (TextView) itemView.findViewById(R.id.starTextViewProfile);
+            textViewLocation = (TextView) itemView.findViewById(R.id.locationTextViewProfile);
             imageView = (ImageView) itemView.findViewById(R.id.imageReviewImageView);
         }
     }
 
 
-    public HelperAdapterProfile(HashMap<String, ReviewHelperClass> reviewMap) {
+    public HelperAdapterProfile(HashMap<String, ReviewHelperClass> reviewMap, Context context) {
+        this.context=context;
         this.reviewMap = reviewMap;
         for (Map.Entry entry : reviewMap.entrySet()) {
             arrayListReview.add((ReviewHelperClass) entry.getValue());
@@ -84,6 +96,8 @@ public class HelperAdapterProfile
         viewHolderClass.textViewDate.setText(String.valueOf(formatter.format(rhc.getDate())));
         viewHolderClass.textViewScore.setText(String.valueOf(rhc.getStars()) + "/5");
 
+        getCompleteAddress(rhc,viewHolderClass.textViewLocation);
+
 
         listOfViewOlderImages.add((ImageView) viewHolderClass.imageView);
         //GET IMAGE FROM DATABASE
@@ -105,11 +119,11 @@ public class HelperAdapterProfile
         viewHolderClass.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            ProfileFragmentDirections.NavigateFromProfileToReviewDetail action =
-                    ProfileFragmentDirections.navigateFromProfileToReviewDetail(reviewMap.get(v.getTag()));
-            action.setCurrentRhc(reviewMap.get(v.getTag()));
-            action.setTag(String.valueOf(v.getTag()));
-            Navigation.findNavController(view).navigate(action);
+                ProfileFragmentDirections.NavigateFromProfileToReviewDetail action =
+                        ProfileFragmentDirections.navigateFromProfileToReviewDetail(reviewMap.get(v.getTag()));
+                action.setCurrentRhc(reviewMap.get(v.getTag()));
+                action.setTag(String.valueOf(v.getTag()));
+                Navigation.findNavController(view).navigate(action);
             }
         });
 
@@ -121,5 +135,20 @@ public class HelperAdapterProfile
     }
 
 
+    public void getCompleteAddress(ReviewHelperClass revHelClass, TextView vhTVL) {
+
+        geocoder = new Geocoder(context, Locale.getDefault());
+        try {
+            addresses = geocoder.getFromLocation(revHelClass.getLatitude(), revHelClass.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String city = addresses.get(0).getLocality();
+        vhTVL.setText(city);
+
+
+    }
 }
 

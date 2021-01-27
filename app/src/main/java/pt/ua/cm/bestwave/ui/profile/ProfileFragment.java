@@ -157,7 +157,7 @@ public class ProfileFragment extends Fragment {
                     }
                 }
 
-                helperAdapterProfile = new HelperAdapterProfile(reviewMap);
+                helperAdapterProfile = new HelperAdapterProfile(reviewMap,getContext());
                 reviewRecyclerView.setAdapter(helperAdapterProfile);
             }
 

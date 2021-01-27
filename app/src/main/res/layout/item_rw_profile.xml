@@ -41,6 +41,7 @@
         android:layout_weight="2"></TextView>
 
     <TextView
+        android:id="@+id/locationTextViewProfile"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:textSize="20dp"
